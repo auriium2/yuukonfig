@@ -1,7 +1,8 @@
 package com.superyuuki.yuukonfig.decompose;
 
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.error.NoHandlerFailure;
+import com.superyuuki.yuukonfig.error.NoDeserializerFailure;
+import com.superyuuki.yuukonfig.error.NoSerializerFailure;
 
 import java.util.*;
 
@@ -26,6 +27,6 @@ public class BaseDeserializers implements Deserializers {
             }
         }
 
-        throw new NoHandlerFailure(clazz);
+        throw new NoDeserializerFailure(clazz);
     }
 }

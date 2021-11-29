@@ -56,17 +56,7 @@ public class InterfaceSerializer implements Serializer {
 
                 Object child = new ProxyForwarder(method, defaultProxy).invoke();
 
-                System.out.println("----- " + method.getName() + " -------");
-
-                YamlNode top = serializers.serialize(child);
-
-                System.out.println(top);
-
-                if (top.isEmpty()) System.out.println("IVE HAD IT");
-
-                System.out.println(top);
-
-                yamlNodeMap.put(getKey(method), top);
+                yamlNodeMap.put(getKey(method), serializers.serialize(child));
 
             } else {
 
@@ -77,17 +67,9 @@ public class InterfaceSerializer implements Serializer {
             }
         }
 
-        System.out.println("--------------------- COMPLETE ------------------------");
-
         YamlMappingBuilder mappingBuilder = Yaml.createYamlMappingBuilder();
 
         for (Map.Entry<String, YamlNode> nodeEntry : yamlNodeMap.entrySet()) {
-            if (nodeEntry.getValue().isEmpty()) System.out.println("WHY IS IT EMPTY WTF");
-
-            System.out.println("Putting key: " + nodeEntry.getKey() + " and value: " + nodeEntry.getValue());
-
-            //TEMPORARY WORKAROUND TIME!!!!!!!
-
             mappingBuilder = mappingBuilder.add(nodeEntry.getKey(), nodeEntry.getValue());
 
         }

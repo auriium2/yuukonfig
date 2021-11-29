@@ -1,7 +1,7 @@
 package com.superyuuki.yuukonfig.compose;
 
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.error.NoHandlerFailure;
+import com.superyuuki.yuukonfig.error.NoSerializerFailure;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +28,7 @@ public class BaseSerializers implements Serializers {
             }
         }
 
-        throw new NoHandlerFailure(clazz);
+        throw new NoSerializerFailure(clazz);
     }
 
     @Override
@@ -43,6 +43,6 @@ public class BaseSerializers implements Serializers {
             }
         }
 
-        throw new NoHandlerFailure(clazz);
+        throw new NoSerializerFailure(clazz);
     }
 }

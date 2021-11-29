@@ -1,6 +1,8 @@
 package com.superyuuki.yuukonfig.compose.reflection;
 
+import com.superyuuki.yuukonfig.error.ConfigIOFailure;
 import com.superyuuki.yuukonfig.error.IllegalAccessFailure;
+import com.superyuuki.yuukonfig.error.ImpossibleReflectiveAccess;
 import com.superyuuki.yuukonfig.error.InvocationTargetFailure;
 
 import java.lang.invoke.MethodHandles;
@@ -20,6 +22,11 @@ public class ProxyForwarder implements Forwarder {
         try {
             return method.invoke(toInvokeOn);
         } catch (IllegalAccessException e) {
+
+            if (e.getMessage().contains("cannot access a member of interface")) {
+                throw new ImpossibleReflectiveAccess(method.getDeclaringClass().getName());
+            }
+
             throw new IllegalAccessFailure(e);
         } catch (Throwable e) {
             throw new InvocationTargetFailure(e);
