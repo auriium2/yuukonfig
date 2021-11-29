@@ -3,7 +3,7 @@ package com.superyuuki.yuukonfig.serializer.bad;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.Section;
-import com.superyuuki.yuukonfig.config.BaseRegistry;
+import com.superyuuki.yuukonfig.BaseRegistry;
 import com.superyuuki.yuukonfig.error.ImpossibleReflectiveAccess;
 import com.superyuuki.yuukonfig.error.TooManyArgsFailure;
 import org.junit.jupiter.api.Assertions;

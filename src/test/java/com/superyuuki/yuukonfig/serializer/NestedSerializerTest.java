@@ -1,18 +1,13 @@
-package com.superyuuki.yuukonfig;
+package com.superyuuki.yuukonfig.serializer;
 
-import com.amihaiemil.eoyaml.Scalar;
-import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
+import com.superyuuki.yuukonfig.Section;
 import com.superyuuki.yuukonfig.annotate.ConfKey;
-import com.superyuuki.yuukonfig.config.BaseRegistry;
+import com.superyuuki.yuukonfig.BaseRegistry;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.logging.Logger;
-import org.junit.platform.commons.logging.LoggerFactory;
 
 public class NestedSerializerTest {
-
-    Logger logger = LoggerFactory.getLogger(NestedSerializerTest.class);
 
     public interface InternalConfig extends Section {
 
@@ -42,13 +37,13 @@ public class NestedSerializerTest {
 
     @Test
     public void testSerialization() {
-        logger.info(() -> "Starting test!");
-
         YamlNode node = BaseRegistry.defaults().makeSerializers().serializeDefault(InternalConfig.class);
 
-        Assertions.assertFalse(node.isEmpty());
+        Assertions.assertEquals(10, node.asMapping().value("nestedConfig").asMapping().integer("someint"));
+        Assertions.assertEquals(5, node.asMapping().integer("number"));
+        Assertions.assertEquals("true", node.asMapping().string("bool"));
 
-        System.out.println(node);
+        Assertions.assertFalse(node.isEmpty());
 
     }
 

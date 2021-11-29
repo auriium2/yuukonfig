@@ -1,11 +1,9 @@
-package com.superyuuki.yuukonfig.config;
+package com.superyuuki.yuukonfig;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlPrinter;
 import com.amihaiemil.eoyaml.extensions.MergedYamlMapping;
-import com.superyuuki.yuukonfig.CommonRegistry;
-import com.superyuuki.yuukonfig.ConfigLoader;
 import com.superyuuki.yuukonfig.compose.Serializers;
 import com.superyuuki.yuukonfig.decompose.Deserializers;
 import com.superyuuki.yuukonfig.error.ConfigIOFailure;
@@ -53,7 +51,7 @@ public class BaseLoader<C> implements ConfigLoader<C> {
 
         //read defaults
 
-        C config = deserializers.deserialize(combined, configType);
+        C config = deserializers.deserialize(combined, configType, file.getName());
 
         //export defaults since they have passed validation!
 

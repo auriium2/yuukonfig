@@ -23,12 +23,14 @@ public class InterfaceDeserializer implements Deserializer {
     }
 
     @Override
-    public Object deserialize(Class<?> requestedClass, YamlNode node, Deserializers deserializers) {
+    public Object deserialize(YamlNode node, RequestContext<?> rq, DeserializerContext ctx) {
+        Class<?> req = rq.requestedClass();
+
         YamlMapping mapping = node.asMapping();
 
         Map<String, Object> backingMap = new HashMap<>();
 
-        for (Method method : requestedClass.getMethods()) {
+        for (Method method : req.getMethods()) {
             if (method.getParameterCount() != 0) throw new TooManyArgsFailure(method.getName());
 
             String key = getKey(method);
@@ -38,12 +40,16 @@ public class InterfaceDeserializer implements Deserializer {
 
             Class<?> returnType = method.getReturnType();
 
-            backingMap.put(method.getName(), deserializers.deserialize(nullable, returnType));
+            backingMap.put(method.getName(), ctx.deserializers().deserialize(
+                    nullable,
+                    new BaseRequestCtx<>(returnType, key),
+                    ctx
+            ));
         }
 
-        return requestedClass.cast(Proxy.newProxyInstance(
+        return req.cast(Proxy.newProxyInstance(
                 Thread.currentThread().getContextClassLoader(),
-                new Class[]{ requestedClass },
+                new Class[]{ req },
                 new MappedInvocationHandler(Map.copyOf(backingMap))
         ));
     }

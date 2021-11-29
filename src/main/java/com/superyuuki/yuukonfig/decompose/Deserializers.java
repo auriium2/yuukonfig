@@ -4,6 +4,7 @@ import com.amihaiemil.eoyaml.YamlNode;
 
 public interface Deserializers {
 
-    <T> T deserialize(YamlNode node, Class<? extends T> clazz);
+    <T> T deserialize(YamlNode node, RequestContext<T> rq, DeserializerContext ctx);
+    <T> T deserialize(YamlNode node, Class<T> rq, String configName);
 
 }

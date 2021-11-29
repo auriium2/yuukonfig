@@ -32,53 +32,30 @@ Requires Java 16.
 
 ```java
 
-import com.superyuuki.yuukonfig.deserializer.section.Section;
-import com.superyuuki.yuukonfig.deserializer.Subsection;
-import com.superyuuki.yuukonfig.annotate.ConfKey;
+public interface InternalConfig extends Section {
 
-public interface SomeMasterConfig {
-
-    @ConfKey("customKeyNames")
-    SomeObject someValue();
-
-    default Integer otherValue() {
-        return 50;
+    @ConfKey("number")
+    default Integer defaultInt() {
+        return 5;
     }
 
-    default CustomType customType() {
-        return new CustomType("Jim");
+    @ConfKey("bool")
+    default Boolean defaultBool() {
+        return true;
     }
 
-    interface SomeObject extends Section {
-        default Integer val1() {
-            return 0;
+    @ConfKey("nestedConfig")
+    NestedConfig notDefaultConfig();
+
+
+    interface NestedConfig extends Section {
+
+        @ConfKey("someint")
+        default Integer nestedInteger() {
+            return 10;
         }
 
-        default String val2() {
-            return "lol";
-        }
     }
-
-    class SomeTypeSerializer implements Deserializer<CustomType> {
-
-        private final Server server;
-
-        CustomType deserialize(YamlNode node, DeserializerRegistry registry) {
-            String user = node.asScalar().value();
-
-            return new CustomType(server, user);
-        }
-
-        class CustomType {
-            private final Server server;
-            private final String user;
-
-            void logic() {
-                server.getUser(user).kill();
-            }
-        }
-    }
-
 }
 
 ```
@@ -86,11 +63,10 @@ public interface SomeMasterConfig {
 Gives you
 
 ```yaml
-customKeyNames:
-  val1: 1
-  val2: Hello
-otherValue: 50
-customType: Jim
+nestedConfig:
+  someint: 10
+number: 5
+bool: true
 ```
 
 The power is in the deserializer: Instead of populating your config

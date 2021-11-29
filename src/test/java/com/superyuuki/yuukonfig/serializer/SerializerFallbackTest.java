@@ -6,8 +6,7 @@ import com.superyuuki.yuukonfig.CommonRegistry;
 import com.superyuuki.yuukonfig.Section;
 import com.superyuuki.yuukonfig.compose.Serializers;
 import com.superyuuki.yuukonfig.compose.TypedSerializer;
-import com.superyuuki.yuukonfig.config.BaseRegistry;
-import com.superyuuki.yuukonfig.serializer.bad.ReflectiveSerializerTest;
+import com.superyuuki.yuukonfig.BaseRegistry;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

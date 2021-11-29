@@ -2,7 +2,6 @@ package com.superyuuki.yuukonfig.decompose;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.error.NoDeserializerFailure;
-import com.superyuuki.yuukonfig.error.NoSerializerFailure;
 
 import java.util.*;
 
@@ -15,18 +14,24 @@ public class BaseDeserializers implements Deserializers {
     }
 
     @Override
-    public <T> T deserialize(YamlNode node, Class<? extends T> clazz) {
+    public <T> T deserialize(YamlNode node, RequestContext<T> rq, DeserializerContext ctx) {
+        Class<? extends T> requested = rq.requestedClass();
 
-        Optional<Deserializer> des = deserializers.stream().max(Comparator.comparing(v -> v.handles(clazz)));
+        Optional<Deserializer> des = deserializers.stream().max(Comparator.comparing(v -> v.handles(requested)));
 
         if (des.isPresent()) {
             Deserializer deserializer = des.get();
-            if (deserializer.handles(clazz) > 0) {
+            if (deserializer.handles(requested) > 0) {
 
-                return clazz.cast(deserializer.deserialize(clazz, node, this));
+                return requested.cast(deserializer.deserialize(node, rq, ctx));
             }
         }
 
-        throw new NoDeserializerFailure(clazz);
+        throw new NoDeserializerFailure(requested);
+    }
+
+    @Override
+    public <T> T deserialize(YamlNode node, Class<T> rq, String configName) {
+        return deserialize(node, new BaseRequestCtx<>(rq, "ignored"), new BaseDeserializerCtx(this, configName));
     }
 }

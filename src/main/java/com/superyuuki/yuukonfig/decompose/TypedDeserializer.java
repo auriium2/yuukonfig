@@ -2,10 +2,11 @@ package com.superyuuki.yuukonfig.decompose;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.Priority;
+import com.superyuuki.yuukonfig.error.parsing.ParsingFailure;
 
 public interface TypedDeserializer<T> {
 
-    T deserialize(Class<? extends T> clazz, YamlNode node, Deserializers deserializer);
+    T deserialize(YamlNode node, RequestContext<T> rq, DeserializerContext ctx) throws ParsingFailure;
 
     class Mock<T> implements Deserializer {
 
@@ -28,10 +29,10 @@ public interface TypedDeserializer<T> {
 
         @SuppressWarnings("unchecked")
         @Override
-        public Object deserialize(Class<?> requestedClass, YamlNode node, Deserializers deserializers) {
-
+        public Object deserialize(YamlNode node, RequestContext<?> rq, DeserializerContext ctx) {
+            Class<?> requestedClass = rq.requestedClass();
             //should be safe
-            if (target.isAssignableFrom(requestedClass)) return this.deserializer.deserialize((Class<? extends T>) requestedClass, node, deserializers);
+            if (target.isAssignableFrom(requestedClass)) return this.deserializer.deserialize(node, (RequestContext<T>) rq, ctx);
 
             throw new ClassCastException("Unexpected class cast received when deserializing a config node!");
         }

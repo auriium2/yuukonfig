@@ -1,4 +1,4 @@
-package com.superyuuki.yuukonfig.compose.primitive;
+package com.superyuuki.yuukonfig.inbuilt.text;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;

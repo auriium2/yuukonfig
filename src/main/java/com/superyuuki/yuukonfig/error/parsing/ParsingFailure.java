@@ -1,25 +1,25 @@
 package com.superyuuki.yuukonfig.error.parsing;
 
+import com.superyuuki.yuukonfig.decompose.DeserializerContext;
+import com.superyuuki.yuukonfig.decompose.RequestContext;
 import com.superyuuki.yuukonstants.Failure;
 
 public class ParsingFailure extends Failure {
 
-    public ParsingFailure() {
+    public ParsingFailure(String conf, String key, String message) {
+        super(String.format("Error while parsing config: %s key: %s, %s", conf, key, message));
     }
 
-    public ParsingFailure(String message) {
-        super(message);
+    public ParsingFailure(String conf, String key, Throwable throwable) {
+        super(String.format("While parsing config: %s key: %s exception was thrown", conf, key), throwable);
     }
 
-    public ParsingFailure(String message, Throwable cause) {
-        super(message, cause);
+    public ParsingFailure(RequestContext<?> rq, DeserializerContext ctx, String message) {
+        this(ctx.configDisplayName(), rq.keyDisplayName(), message);
     }
 
-    public ParsingFailure(Throwable cause) {
-        super(cause);
+    public ParsingFailure(RequestContext<?> rq, DeserializerContext ctx, Throwable throwable) {
+        this(ctx.configDisplayName(), rq.keyDisplayName(), throwable);
     }
 
-    public ParsingFailure(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }
