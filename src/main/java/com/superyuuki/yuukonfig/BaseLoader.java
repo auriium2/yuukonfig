@@ -4,8 +4,8 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlPrinter;
 import com.amihaiemil.eoyaml.extensions.MergedYamlMapping;
-import com.superyuuki.yuukonfig.compose.Serializers;
-import com.superyuuki.yuukonfig.decompose.Deserializers;
+import com.superyuuki.yuukonfig.serialize.compose.Serializers;
+import com.superyuuki.yuukonfig.serialize.decompose.Deserializers;
 import com.superyuuki.yuukonfig.error.ConfigIOFailure;
 
 import java.io.File;

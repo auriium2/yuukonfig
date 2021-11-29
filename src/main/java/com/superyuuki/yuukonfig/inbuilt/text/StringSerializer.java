@@ -2,8 +2,8 @@ package com.superyuuki.yuukonfig.inbuilt.text;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.compose.Serializers;
-import com.superyuuki.yuukonfig.compose.TypedSerializer;
+import com.superyuuki.yuukonfig.serialize.compose.Serializers;
+import com.superyuuki.yuukonfig.serialize.compose.TypedSerializer;
 
 public class StringSerializer implements TypedSerializer<String> {
 

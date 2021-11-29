@@ -1,4 +1,4 @@
-package com.superyuuki.yuukonfig.compose;
+package com.superyuuki.yuukonfig.serialize.compose;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.Priority;

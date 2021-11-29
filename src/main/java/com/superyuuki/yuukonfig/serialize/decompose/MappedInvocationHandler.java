@@ -1,4 +1,4 @@
-package com.superyuuki.yuukonfig.decompose;
+package com.superyuuki.yuukonfig.serialize.decompose;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;

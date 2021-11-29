@@ -1,7 +1,9 @@
-package com.superyuuki.yuukonfig.decompose;
+package com.superyuuki.yuukonfig.serialize.decompose;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.error.NoDeserializerFailure;
+import com.superyuuki.yuukonfig.serialize.InitialRequestCtx;
+import com.superyuuki.yuukonfig.serialize.RequestContext;
 
 import java.util.*;
 
@@ -32,6 +34,6 @@ public class BaseDeserializers implements Deserializers {
 
     @Override
     public <T> T deserialize(YamlNode node, Class<T> rq, String configName) {
-        return deserialize(node, new BaseRequestCtx<>(rq, "ignored"), new BaseDeserializerCtx(this, configName));
+        return deserialize(node, new InitialRequestCtx<T>(rq), new BaseDeserializerCtx(this, configName));
     }
 }

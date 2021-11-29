@@ -3,8 +3,8 @@ package com.superyuuki.yuukonfig.inbuilt.enumerator;
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.Priority;
-import com.superyuuki.yuukonfig.compose.Serializer;
-import com.superyuuki.yuukonfig.compose.Serializers;
+import com.superyuuki.yuukonfig.serialize.compose.Serializer;
+import com.superyuuki.yuukonfig.serialize.compose.Serializers;
 import com.superyuuki.yuukonfig.error.NoDefaultSerializerFailure;
 import com.superyuuki.yuukonfig.error.UnexpectedRequestFailure;
 

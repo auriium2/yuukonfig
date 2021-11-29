@@ -1,12 +1,12 @@
-package com.superyuuki.yuukonfig.compose.reflection;
+package com.superyuuki.yuukonfig.serialize.compose.reflection;
 
 import com.amihaiemil.eoyaml.*;
 import com.superyuuki.yuukonfig.Priority;
 import com.superyuuki.yuukonfig.Section;
 import com.superyuuki.yuukonfig.annotate.ConfComments;
 import com.superyuuki.yuukonfig.annotate.ConfKey;
-import com.superyuuki.yuukonfig.compose.Serializer;
-import com.superyuuki.yuukonfig.compose.Serializers;
+import com.superyuuki.yuukonfig.serialize.compose.Serializer;
+import com.superyuuki.yuukonfig.serialize.compose.Serializers;
 import com.superyuuki.yuukonfig.error.TooManyArgsFailure;
 
 import java.lang.reflect.InvocationHandler;

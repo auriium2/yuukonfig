@@ -1,4 +1,4 @@
-package com.superyuuki.yuukonfig.compose.reflection;
+package com.superyuuki.yuukonfig.serialize.compose.reflection;
 
 /**
  * slang for a proxy lmfao

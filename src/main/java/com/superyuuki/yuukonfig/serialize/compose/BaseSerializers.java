@@ -1,4 +1,4 @@
-package com.superyuuki.yuukonfig.compose;
+package com.superyuuki.yuukonfig.serialize.compose;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.error.NoSerializerFailure;
@@ -23,6 +23,8 @@ public class BaseSerializers implements Serializers {
         if (ser.isPresent()) {
             Serializer serializer = ser.get();
             if (serializer.handles(clazz) > 0) {
+
+                serializer.serializeObject()
 
                 return serializer.serializeObject(clazz, object, this);
             }

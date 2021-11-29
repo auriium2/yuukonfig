@@ -1,9 +1,9 @@
 package com.superyuuki.yuukonfig;
 
-import com.superyuuki.yuukonfig.compose.Serializer;
-import com.superyuuki.yuukonfig.compose.Serializers;
-import com.superyuuki.yuukonfig.decompose.Deserializer;
-import com.superyuuki.yuukonfig.decompose.Deserializers;
+import com.superyuuki.yuukonfig.serialize.compose.Serializer;
+import com.superyuuki.yuukonfig.serialize.compose.Serializers;
+import com.superyuuki.yuukonfig.serialize.decompose.Deserializer;
+import com.superyuuki.yuukonfig.serialize.decompose.Deserializers;
 
 public interface CommonRegistry {
 

@@ -3,6 +3,7 @@ package com.superyuuki.yuukonfig;
 import com.superyuuki.yuukonfig.compose.*;
 import com.superyuuki.yuukonfig.inbuilt.bool.BooleanDeserializer;
 import com.superyuuki.yuukonfig.inbuilt.bool.BooleanSerializer;
+import com.superyuuki.yuukonfig.inbuilt.collection.ListSerializer;
 import com.superyuuki.yuukonfig.inbuilt.enumerator.EnumDeserializer;
 import com.superyuuki.yuukonfig.inbuilt.enumerator.EnumSerializer;
 import com.superyuuki.yuukonfig.inbuilt.number.DoubleDeserializer;
@@ -11,8 +12,14 @@ import com.superyuuki.yuukonfig.inbuilt.number.IntegerDeserializer;
 import com.superyuuki.yuukonfig.inbuilt.number.IntegerSerializer;
 import com.superyuuki.yuukonfig.inbuilt.text.StringDeserializer;
 import com.superyuuki.yuukonfig.inbuilt.text.StringSerializer;
-import com.superyuuki.yuukonfig.compose.reflection.InterfaceSerializer;
+import com.superyuuki.yuukonfig.serialize.compose.BaseSerializers;
+import com.superyuuki.yuukonfig.serialize.compose.Serializer;
+import com.superyuuki.yuukonfig.serialize.compose.Serializers;
+import com.superyuuki.yuukonfig.serialize.compose.TypedSerializer;
+import com.superyuuki.yuukonfig.serialize.compose.decompose.*;
+import com.superyuuki.yuukonfig.serialize.compose.reflection.InterfaceSerializer;
 import com.superyuuki.yuukonfig.decompose.*;
+import com.superyuuki.yuukonfig.serialize.decompose.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +56,9 @@ public class BaseRegistry implements CommonRegistry {
         //enum
         serializers.add(new EnumSerializer());
         deserializers.add(new EnumDeserializer());
+
+        //collections
+        serializers.add(new TypedSerializer.Mock<>(List.class, new ListSerializer()));
 
         return new BaseRegistry(serializers, deserializers);
     }

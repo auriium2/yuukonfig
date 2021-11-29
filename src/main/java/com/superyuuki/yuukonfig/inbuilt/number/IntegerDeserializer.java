@@ -1,9 +1,9 @@
 package com.superyuuki.yuukonfig.inbuilt.number;
 
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.decompose.DeserializerContext;
-import com.superyuuki.yuukonfig.decompose.RequestContext;
-import com.superyuuki.yuukonfig.decompose.TypedDeserializer;
+import com.superyuuki.yuukonfig.serialize.decompose.DeserializerContext;
+import com.superyuuki.yuukonfig.serialize.RequestContext;
+import com.superyuuki.yuukonfig.serialize.decompose.TypedDeserializer;
 import com.superyuuki.yuukonfig.error.parsing.ParsingFailure;
 
 public class IntegerDeserializer implements TypedDeserializer<Integer> {

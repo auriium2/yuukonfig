@@ -1,4 +1,4 @@
-package com.superyuuki.yuukonfig.decompose;
+package com.superyuuki.yuukonfig.serialize.decompose;
 
 public record BaseDeserializerCtx(Deserializers context, String configDisplayName) implements DeserializerContext {
 

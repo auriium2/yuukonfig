@@ -1,7 +1,7 @@
 package com.superyuuki.yuukonfig.error.parsing;
 
-import com.superyuuki.yuukonfig.decompose.DeserializerContext;
-import com.superyuuki.yuukonfig.decompose.RequestContext;
+import com.superyuuki.yuukonfig.serialize.decompose.DeserializerContext;
+import com.superyuuki.yuukonfig.serialize.RequestContext;
 import com.superyuuki.yuukonstants.Failure;
 
 public class ParsingFailure extends Failure {

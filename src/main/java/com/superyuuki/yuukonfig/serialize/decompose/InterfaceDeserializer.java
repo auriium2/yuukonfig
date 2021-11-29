@@ -1,4 +1,4 @@
-package com.superyuuki.yuukonfig.decompose;
+package com.superyuuki.yuukonfig.serialize.decompose;
 
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
@@ -7,6 +7,8 @@ import com.superyuuki.yuukonfig.Priority;
 import com.superyuuki.yuukonfig.Section;
 import com.superyuuki.yuukonfig.annotate.ConfKey;
 import com.superyuuki.yuukonfig.error.TooManyArgsFailure;
+import com.superyuuki.yuukonfig.serialize.RequestContext;
+import com.superyuuki.yuukonfig.serialize.BaseRequestCtx;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -42,7 +44,7 @@ public class InterfaceDeserializer implements Deserializer {
 
             backingMap.put(method.getName(), ctx.deserializers().deserialize(
                     nullable,
-                    new BaseRequestCtx<>(returnType, key),
+                    new BaseRequestCtx<>(returnType, method.getGenericReturnType(), key),
                     ctx
             ));
         }
