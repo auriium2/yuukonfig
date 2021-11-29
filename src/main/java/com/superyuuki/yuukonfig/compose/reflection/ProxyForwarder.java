@@ -1,17 +1,17 @@
-package com.superyuuki.yuukonfig.compose;
+package com.superyuuki.yuukonfig.compose.reflection;
 
 import com.superyuuki.yuukonfig.error.IllegalAccessFailure;
 import com.superyuuki.yuukonfig.error.InvocationTargetFailure;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 
-public class InvocationForwarder {
+public class ProxyForwarder implements Forwarder {
 
     private final Method method;
     private final Object toInvokeOn;
 
-    public InvocationForwarder(Method method, Object toInvokeOn) {
+    public ProxyForwarder(Method method, Object toInvokeOn) {
         this.method = method;
         this.toInvokeOn = toInvokeOn;
     }
@@ -21,8 +21,9 @@ public class InvocationForwarder {
             return method.invoke(toInvokeOn);
         } catch (IllegalAccessException e) {
             throw new IllegalAccessFailure(e);
-        } catch (InvocationTargetException e) {
+        } catch (Throwable e) {
             throw new InvocationTargetFailure(e);
         }
     }
+
 }

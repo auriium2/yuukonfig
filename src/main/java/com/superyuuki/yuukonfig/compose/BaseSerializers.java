@@ -32,7 +32,7 @@ public class BaseSerializers implements Serializers {
     }
 
     @Override
-    public YamlNode serialize(Class<?> clazz) {
+    public YamlNode serializeDefault(Class<?> clazz) {
         Optional<Serializer> ser = serializers.stream().max(Comparator.comparing(v -> v.handles(clazz)));
 
         if (ser.isPresent()) {

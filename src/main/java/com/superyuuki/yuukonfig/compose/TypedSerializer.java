@@ -39,7 +39,7 @@ public interface TypedSerializer<T> {
         @SuppressWarnings("unchecked")
         @Override
         public YamlNode serializeObject(Class<?> request, Object object, Serializers serializers) {
-            if (target.isAssignableFrom(request)) return typedSerializer.serializeObject((Class<? extends T>) request, target.cast(request), serializers);
+            if (target.isAssignableFrom(request)) return typedSerializer.serializeObject((Class<? extends T>) request, target.cast(object), serializers);
 
             throw new ClassCastException("Unexpected class cast received when serializing a config node!");
         }

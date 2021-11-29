@@ -14,6 +14,7 @@ Configuration for idiots
 # Warning
 
 Filled with reflection hacks as most annotation config libraries are. 
+Requires Java 16.
 
 # Repos
 

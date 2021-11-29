@@ -2,7 +2,9 @@ package com.superyuuki.yuukonfig.config;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
+import com.amihaiemil.eoyaml.YamlPrinter;
 import com.amihaiemil.eoyaml.extensions.MergedYamlMapping;
+import com.superyuuki.yuukonfig.CommonRegistry;
 import com.superyuuki.yuukonfig.ConfigLoader;
 import com.superyuuki.yuukonfig.compose.Serializers;
 import com.superyuuki.yuukonfig.decompose.Deserializers;
@@ -10,6 +12,7 @@ import com.superyuuki.yuukonfig.error.ConfigIOFailure;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class BaseLoader<C> implements ConfigLoader<C> {
@@ -26,6 +29,12 @@ public class BaseLoader<C> implements ConfigLoader<C> {
         this.deserializers = deserializers;
     }
 
+    public static <C> BaseLoader<C> defaults(File file, Class<C> configType) {
+        CommonRegistry registry = BaseRegistry.defaults();
+
+        return new BaseLoader<>(file, configType, registry.makeSerializers(), registry.makeDeserializers());
+    }
+
     @Override
     public C load() {
         YamlMapping userContent;
@@ -39,16 +48,25 @@ public class BaseLoader<C> implements ConfigLoader<C> {
         }
 
         //load defaults
-        YamlMapping defaults = registry.serialize(configType).asMapping();
+        YamlMapping defaults = registry.serializeDefault(configType).asMapping();
         YamlMapping combined = new MergedYamlMapping(userContent, defaults, false);
 
         //read defaults
 
         C config = deserializers.deserialize(combined, configType);
 
-        //export defaults
+        //export defaults since they have passed validation!
 
+        try {
+            YamlPrinter printer = Yaml.createYamlPrinter(
+                    new FileWriter(file)
+            );
 
-        return null;
+            printer.print(combined); //file map.yml will be created and written.
+        } catch (IOException ioException) {
+            throw new ConfigIOFailure(file.getName(), ioException);
+        }
+
+        return config;
     }
 }

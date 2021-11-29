@@ -1,18 +1,23 @@
-package com.superyuuki.yuukonfig.compose;
+package com.superyuuki.yuukonfig.compose.reflection;
 
-import com.amihaiemil.eoyaml.Yaml;
-import com.amihaiemil.eoyaml.YamlMappingBuilder;
-import com.amihaiemil.eoyaml.YamlNode;
+import com.amihaiemil.eoyaml.*;
 import com.superyuuki.yuukonfig.Priority;
+import com.superyuuki.yuukonfig.Section;
 import com.superyuuki.yuukonfig.annotate.ConfComments;
 import com.superyuuki.yuukonfig.annotate.ConfKey;
+import com.superyuuki.yuukonfig.compose.Serializer;
+import com.superyuuki.yuukonfig.compose.Serializers;
 import com.superyuuki.yuukonfig.error.TooManyArgsFailure;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class InterfaceSerializer implements Serializer {
+
     @Override
     public int handles(Class<?> clazz) {
         if (Section.class.isAssignableFrom(clazz)) return Priority.HANDLE;
@@ -29,37 +34,67 @@ public class InterfaceSerializer implements Serializer {
     @SuppressWarnings("unchecked")
     <T> YamlNode maintainType(Class<T> request, Serializers serializers) {
 
-        YamlMappingBuilder builder = Yaml.createYamlMappingBuilder();
+        T defaultProxy = request.cast(Proxy.newProxyInstance(
+                ClassLoader.getSystemClassLoader(),
+                new Class[]{ request },
+                (a,b,c) -> {
+                    if (b.isDefault()) {
+                        return InvocationHandler.invokeDefault(a, b, c);
+                    }
 
-        T defaultInvoke = (T) Proxy.newProxyInstance(
-                Thread.currentThread().getContextClassLoader(),
-                new Class[] { request },
-                new DefaultInvocationHandler<>( request )
-        );
+                    throw new IllegalStateException("Defaulting anonymous proxy does not support normal method queries!");
+                }
+        ));
+
+        Map<String, YamlNode> yamlNodeMap = new HashMap<>();
 
         for (Method method : request.getMethods()) {
             if (method.getParameterCount() != 0) throw new TooManyArgsFailure(method.getName());
 
             if (method.isDefault()) {
                 //get me a value!
-                Object child = new InvocationForwarder(method, defaultInvoke).invoke();
 
-                builder.add(
-                        getKey(method),
-                        serializers.serialize(child)
-                );
+                Object child = new ProxyForwarder(method, defaultProxy).invoke();
+
+                System.out.println("----- " + method.getName() + " -------");
+
+                YamlNode top = serializers.serialize(child);
+
+                System.out.println(top);
+
+                if (top.isEmpty()) System.out.println("IVE HAD IT");
+
+                System.out.println(top);
+
+                yamlNodeMap.put(getKey(method), top);
 
             } else {
+
+                YamlNode subnode = serializers.serializeDefault(method.getReturnType());
                 //get me whatever interface there is, and tell it to bring us a value (later)!
 
-                builder.add(
-                        getKey(method),
-                        serializers.serialize(method.getReturnType())
-                );
+                yamlNodeMap.put(getKey(method), subnode);
             }
         }
 
-        return builder.build();
+        System.out.println("--------------------- COMPLETE ------------------------");
+
+        YamlMappingBuilder mappingBuilder = Yaml.createYamlMappingBuilder();
+
+        for (Map.Entry<String, YamlNode> nodeEntry : yamlNodeMap.entrySet()) {
+            if (nodeEntry.getValue().isEmpty()) System.out.println("WHY IS IT EMPTY WTF");
+
+            System.out.println("Putting key: " + nodeEntry.getKey() + " and value: " + nodeEntry.getValue());
+
+            //TEMPORARY WORKAROUND TIME!!!!!!!
+
+            mappingBuilder = mappingBuilder.add(nodeEntry.getKey(), nodeEntry.getValue());
+
+        }
+
+        return mappingBuilder.build();
+
+
     }
 
     //called when an implementation of a section is found, via default <? extends Section> configKey() {} in an interface
@@ -77,9 +112,9 @@ public class InterfaceSerializer implements Serializer {
         for (Method method : request.getMethods()) {
             if (method.getParameterCount() != 0) throw new TooManyArgsFailure(method.getName());
 
-            builder.add(
+            builder = builder.add(
                     getKey(method),
-                    serializers.serialize(new InvocationForwarder(method, object).invoke())
+                    serializers.serialize(new ProxyForwarder(method, object).invoke())
             );
         }
 
