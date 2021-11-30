@@ -54,22 +54,22 @@
 
     <repositories>
         <repository>
-            <id>yuuki-central</id>
+            <id>yuuki-releases</id>
             <name>releases</name>
-            <url>https://superyuuki.jfrog.io/artifactory/projects-libs-release</url>
+            <url>https://repo.superyuuki.com/releases</url>
         </repository>
     </repositories>
 
     <distributionManagement>
         <repository>
-            <id>yuuki-central</id>
+            <id>yuuki-releases</id>
             <name>releases</name>
-            <url>https://superyuuki.jfrog.io/artifactory/projects-libs-release</url>
+            <url>https://repo.superyuuki.com/releases</url>
         </repository>
         <snapshotRepository>
             <id>yuuki-snapshots</id>
             <name>snapshots</name>
-            <url>https://superyuuki.jfrog.io/artifactory/projects-libs-snapshot</url>
+            <url>https://repo.superyuuki.com/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
