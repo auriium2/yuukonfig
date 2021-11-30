@@ -33,7 +33,7 @@ public class ReflectiveSerializerTest {
     public void testPrivateConfigShouldFail() {
 
         Assertions.assertThrows(ImpossibleReflectiveAccess.class, () -> {
-            YamlNode node = TestHelper.serializerTest(PublicInlineConfig.class);
+            YamlNode node = TestHelper.serializerTest(PackagePrivateConfig.class);
         });
     }
 

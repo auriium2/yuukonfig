@@ -54,9 +54,23 @@
 
     <repositories>
         <repository>
-            <id>github-yuukonstants</id>
-            <url>https://maven.pkg.github.com/superyuuki/yuukonstants</url>
+            <id>yuuki-central</id>
+            <name>releases</name>
+            <url>https://superyuuki.jfrog.io/artifactory/projects-libs-release</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>yuuki-central</id>
+            <name>releases</name>
+            <url>https://superyuuki.jfrog.io/artifactory/projects-libs-release</url>
+        </repository>
+        <snapshotRepository>
+            <id>yuuki-snapshots</id>
+            <name>snapshots</name>
+            <url>https://superyuuki.jfrog.io/artifactory/projects-libs-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
