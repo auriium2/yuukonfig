@@ -11,20 +11,25 @@ Configuration for idiots
 - Really expandable
 - Never write a config parser again
 
-# Warning
-
-Filled with reflection hacks as most annotation config libraries are. 
-Requires Java 16.
-
 # Repos
 
 ```xml
 
 <dependencies>
     <dependency>
-        
+        <groupId>com.superyuuki</groupId>
+        <artifactId>yuukonfig</artifactId>
+        <version>1.0.0</version>
     </dependency>
 </dependencies>
+
+<repositories>
+    <repository>
+        <id>yuuki-releases</id>
+        <name>releases</name>
+        <url>https://repo.superyuuki.com/releases</url>
+    </repository>
+</repositories>
 
 ```
 
@@ -69,12 +74,9 @@ number: 5
 bool: true
 ```
 
-The power is in the deserializer: Instead of populating your config
-with dumb data classes, you can insert live, ready to use **objects** which
-actually do something with their stored data, backed by the yaml config.
+Configs are immutable (cannot change values) and threadsafe.
 
-Configs are checked for errors when it is loaded from configs, not when you access it.
-Configs are immutable - they cannot set values. This makes them threadsafe.
+Configs support any object or interface you can think of, even user defined ones.
 
 # Vs. DazzleConf
 
