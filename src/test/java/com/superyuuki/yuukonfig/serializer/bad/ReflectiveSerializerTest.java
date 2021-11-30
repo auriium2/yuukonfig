@@ -3,9 +3,10 @@ package com.superyuuki.yuukonfig.serializer.bad;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.Section;
-import com.superyuuki.yuukonfig.BaseRegistry;
-import com.superyuuki.yuukonfig.error.ImpossibleReflectiveAccess;
-import com.superyuuki.yuukonfig.error.TooManyArgsFailure;
+import com.superyuuki.yuukonfig.TestHelper;
+import com.superyuuki.yuukonfig.impl.load.BaseRegistry;
+import com.superyuuki.yuukonfig.inbuilt.section.ImpossibleReflectiveAccess;
+import com.superyuuki.yuukonfig.inbuilt.section.TooManyArgsFailure;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ public class ReflectiveSerializerTest {
     public void testInlinePrivateConfigShouldFail() {
 
         Assertions.assertThrows(ImpossibleReflectiveAccess.class, () -> {
-            YamlNode node = BaseRegistry.defaults().makeSerializers().serializeDefault(InlinePrivateConfig.class);
+            YamlNode node = TestHelper.serializerTest(InlinePrivateConfig.class);
         });
 
     }
@@ -32,7 +33,7 @@ public class ReflectiveSerializerTest {
     public void testPrivateConfigShouldFail() {
 
         Assertions.assertThrows(ImpossibleReflectiveAccess.class, () -> {
-            YamlNode node = BaseRegistry.defaults().makeSerializers().serializeDefault(PackagePrivateConfig.class);
+            YamlNode node = TestHelper.serializerTest(PublicInlineConfig.class);
         });
     }
 
@@ -48,7 +49,7 @@ public class ReflectiveSerializerTest {
     public void testPublicInlineConfigShouldPass() {
 
         Assertions.assertDoesNotThrow(() -> {
-            YamlNode node = BaseRegistry.defaults().makeSerializers().serializeDefault(PublicInlineConfig.class);
+            YamlNode node = TestHelper.serializerTest(PublicInlineConfig.class);
         });
     }
 
@@ -61,7 +62,7 @@ public class ReflectiveSerializerTest {
     @Test
     public void testConfigWithParamsShouldFail() {
         Assertions.assertThrows(TooManyArgsFailure.class, () -> {
-            YamlNode node = BaseRegistry.defaults().makeSerializers().serializeDefault(ConfigWithParams.class);
+            YamlNode node = TestHelper.serializerTest(ConfigWithParams.class);
         });
     }
 

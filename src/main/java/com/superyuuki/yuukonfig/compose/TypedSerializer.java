@@ -2,11 +2,12 @@ package com.superyuuki.yuukonfig.compose;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.Priority;
+import com.superyuuki.yuukonfig.request.Request;
 
 public interface TypedSerializer<T> {
 
-    YamlNode serializeDefault(Class<? extends T> request, Serializers serializers);
-    YamlNode serializeObject(Class<? extends T> request, T object, Serializers serializers);
+    YamlNode serializeDefault(Request request, Serializers serializers);
+    YamlNode serializeObject(Request request, T object, Serializers serializers);
 
     class Mock<T> implements Serializer {
 
@@ -28,20 +29,14 @@ public interface TypedSerializer<T> {
             return Priority.DONT_HANDLE;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
-        public YamlNode serializeDefault(Class<?> request, Serializers serializers) {
-            if (target.isAssignableFrom(request)) return typedSerializer.serializeDefault((Class<? extends T>) request, serializers);
-
-            throw new ClassCastException("Unexpected class cast received when serializing a config node!");
+        public YamlNode serializeDefault(Request request, Serializers serializers) {
+            return typedSerializer.serializeDefault(request, serializers);
         }
 
-        @SuppressWarnings("unchecked")
         @Override
-        public YamlNode serializeObject(Class<?> request, Object object, Serializers serializers) {
-            if (target.isAssignableFrom(request)) return typedSerializer.serializeObject((Class<? extends T>) request, target.cast(object), serializers);
-
-            throw new ClassCastException("Unexpected class cast received when serializing a config node!");
+        public YamlNode serializeObject(Request request, Object object, Serializers serializers) {
+            return typedSerializer.serializeObject(request, target.cast(object), serializers);
         }
     }
 

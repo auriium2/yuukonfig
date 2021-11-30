@@ -1,8 +1,6 @@
 package com.superyuuki.yuukonfig;
 
-import com.superyuuki.yuukonfig.error.NoHeldConfigFailure;
-
-import java.util.Optional;
+import com.superyuuki.yuukonfig.impl.hold.NoHeldConfigFailure;
 
 public interface ConfigHolder<C> {
 

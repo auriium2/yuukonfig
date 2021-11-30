@@ -1,10 +1,18 @@
 package com.superyuuki.yuukonfig.decompose;
 
 import com.amihaiemil.eoyaml.YamlNode;
+import com.superyuuki.yuukonfig.impl.decompose.DeserializerContextImpl;
+import com.superyuuki.yuukonfig.request.Request;
+import com.superyuuki.yuukonfig.request.UserRequest;
 
 public interface Deserializers {
 
-    <T> T deserialize(YamlNode node, RequestContext<T> rq, DeserializerContext ctx);
-    <T> T deserialize(YamlNode node, Class<T> rq, String configName);
+    <T> T deserializeTyped(YamlNode node, UserRequest<T> rq, DeserializerContext ctx);
+    Object deserialize(YamlNode node, Request rq, DeserializerContext ctx);
+
+    default <T> T deserializeTyped(YamlNode node, UserRequest<T> rq, String configName) {
+        return deserializeTyped(node, rq, new DeserializerContextImpl(this, configName));
+    }
+
 
 }
