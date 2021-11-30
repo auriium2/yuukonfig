@@ -2,11 +2,10 @@ package com.superyuuki.yuukonfig.inbuilt.enumerator;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.Priority;
-import com.superyuuki.yuukonfig.serialize.decompose.Deserializer;
-import com.superyuuki.yuukonfig.serialize.decompose.DeserializerContext;
-import com.superyuuki.yuukonfig.serialize.RequestContext;
-import com.superyuuki.yuukonfig.error.UnexpectedRequestFailure;
-import com.superyuuki.yuukonfig.error.parsing.ParsingFailure;
+import com.superyuuki.yuukonfig.decompose.Deserializer;
+import com.superyuuki.yuukonfig.decompose.DeserializerContext;
+import com.superyuuki.yuukonfig.impl.decompose.ParsingFailure;
+import com.superyuuki.yuukonfig.request.Request;
 
 import java.util.Arrays;
 
@@ -20,13 +19,10 @@ public class EnumDeserializer implements Deserializer {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object deserialize(YamlNode node, RequestContext<?> rq, DeserializerContext ctx) throws ParsingFailure {
-
-        Class<?> rawClass = rq.requestedClass();
-        if (!rawClass.isEnum()) throw new UnexpectedRequestFailure(rawClass, Enum.class);
+    public Object deserialize(YamlNode node, Request rq, DeserializerContext ctx) throws ParsingFailure {
 
         String raw = node.asScalar().value();
-        Class<Enum<?>> enumClass = (Class<Enum<?>>) rawClass;
+        Class<Enum<?>> enumClass = (Class<Enum<?>>) rq.requestedClass();
 
         for (Enum<?> enumConstant : enumClass.getEnumConstants()) {
             String name = enumConstant.name();

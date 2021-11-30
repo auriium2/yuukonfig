@@ -2,17 +2,23 @@ package com.superyuuki.yuukonfig.inbuilt.number;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.serialize.compose.Serializers;
-import com.superyuuki.yuukonfig.serialize.compose.TypedSerializer;
+import com.superyuuki.yuukonfig.Priority;
+import com.superyuuki.yuukonfig.compose.Serializers;
+import com.superyuuki.yuukonfig.inbuilt.ScalarSerializer;
+import com.superyuuki.yuukonfig.request.Request;
 
-public class IntegerSerializer implements TypedSerializer<Integer> {
+public class IntegerSerializer implements ScalarSerializer {
+
     @Override
-    public YamlNode serializeDefault(Class<? extends Integer> request, Serializers serializers) {
+    public int handles(Class<?> clazz) {
+        if (clazz.equals(Integer.class) || clazz.equals(int.class)) return Priority.PRIORITY_HANDLE;
+
+        return Priority.DONT_HANDLE;
+    }
+
+    @Override
+    public YamlNode serializeDefault(Request request, Serializers serializers) {
         return Yaml.createYamlScalarBuilder().addLine("0").buildPlainScalar("Default value - please change!");
     }
 
-    @Override
-    public YamlNode serializeObject(Class<? extends Integer> request, Integer object, Serializers serializers) {
-        return Yaml.createYamlScalarBuilder().addLine(object.toString()).buildPlainScalar();
-    }
 }

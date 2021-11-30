@@ -2,7 +2,9 @@ package com.superyuuki.yuukonfig.deserializer;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.BaseRegistry;
+import com.superyuuki.yuukonfig.impl.load.BaseRegistry;
+import com.superyuuki.yuukonfig.impl.request.UserRequestImpl;
+import com.superyuuki.yuukonfig.inbuilt.EnumTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.logging.Logger;
@@ -28,7 +30,11 @@ public class NestedDeserializerTest {
     public void testNestedDeserializerValuesTrue() throws IOException {
         YamlNode node = Yaml.createYamlInput(CONFIG).readYamlMapping();
 
-        DeserializerTestConfig config = BaseRegistry.defaults().makeDeserializers().deserialize(node, DeserializerTestConfig.class, "virtualconfig");
+        DeserializerTestConfig config = BaseRegistry.defaults().makeDeserializers().deserializeTyped(
+                node,
+                new UserRequestImpl<>(DeserializerTestConfig.class),
+                "virtualconfig"
+        );
 
         Assertions.assertEquals(true, config.defaultBool());
         Assertions.assertEquals(3, config.defaultInt());

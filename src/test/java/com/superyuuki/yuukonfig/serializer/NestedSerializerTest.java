@@ -2,8 +2,9 @@ package com.superyuuki.yuukonfig.serializer;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.Section;
+import com.superyuuki.yuukonfig.TestHelper;
 import com.superyuuki.yuukonfig.annotate.ConfKey;
-import com.superyuuki.yuukonfig.BaseRegistry;
+import com.superyuuki.yuukonfig.impl.load.BaseRegistry;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +38,7 @@ public class NestedSerializerTest {
 
     @Test
     public void testSerialization() {
-        YamlNode node = BaseRegistry.defaults().makeSerializers().serializeDefault(InternalConfig.class);
+        YamlNode node = TestHelper.serializerTest(InternalConfig.class);
 
         Assertions.assertEquals(10, node.asMapping().value("nestedConfig").asMapping().integer("someint"));
         Assertions.assertEquals(5, node.asMapping().integer("number"));

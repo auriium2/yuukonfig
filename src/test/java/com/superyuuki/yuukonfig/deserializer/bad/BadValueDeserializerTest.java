@@ -2,9 +2,11 @@ package com.superyuuki.yuukonfig.deserializer.bad;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.BaseRegistry;
 import com.superyuuki.yuukonfig.deserializer.DeserializerTestConfig;
-import com.superyuuki.yuukonfig.error.parsing.ParsingFailure;
+import com.superyuuki.yuukonfig.impl.decompose.ParsingFailure;
+import com.superyuuki.yuukonfig.impl.load.BaseRegistry;
+import com.superyuuki.yuukonfig.impl.request.UserRequestImpl;
+import com.superyuuki.yuukonfig.inbuilt.EnumTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,13 +24,16 @@ public class BadValueDeserializerTest {
                 """;
 
     @Test
-    public void testBadValuesThrowsParsingException() throws IOException {
+    public void testBadValuesThrowsParsingException() {
 
         Assertions.assertThrows(ParsingFailure.class, () -> {
             YamlNode node = Yaml.createYamlInput(BAD_VALUE_CONFIG).readYamlMapping();
 
-            DeserializerTestConfig config = BaseRegistry.defaults().makeDeserializers().deserialize(node, DeserializerTestConfig.class, "virtualconfig");
-
+            DeserializerTestConfig config = BaseRegistry.defaults().makeDeserializers().deserializeTyped(
+                    node,
+                    new UserRequestImpl<>(DeserializerTestConfig.class),
+                    "virtualconfig"
+            );
         });
 
 

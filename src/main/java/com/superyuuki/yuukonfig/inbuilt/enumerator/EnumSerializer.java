@@ -3,10 +3,10 @@ package com.superyuuki.yuukonfig.inbuilt.enumerator;
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.Priority;
-import com.superyuuki.yuukonfig.serialize.compose.Serializer;
-import com.superyuuki.yuukonfig.serialize.compose.Serializers;
-import com.superyuuki.yuukonfig.error.NoDefaultSerializerFailure;
-import com.superyuuki.yuukonfig.error.UnexpectedRequestFailure;
+import com.superyuuki.yuukonfig.compose.Serializer;
+import com.superyuuki.yuukonfig.compose.Serializers;
+import com.superyuuki.yuukonfig.impl.compose.NoDefaultSerializerFailure;
+import com.superyuuki.yuukonfig.request.Request;
 
 public class EnumSerializer implements Serializer {
 
@@ -18,15 +18,12 @@ public class EnumSerializer implements Serializer {
     }
 
     @Override
-    public YamlNode serializeDefault(Class<?> request, Serializers serializers) {
-
+    public YamlNode serializeDefault(Request request, Serializers serializers) {
         throw new NoDefaultSerializerFailure(Enum.class);
     }
 
     @Override
-    public YamlNode serializeObject(Class<?> request, Object object, Serializers serializers) {
-        if (!request.isEnum()) throw new UnexpectedRequestFailure(request, Enum.class);
-
+    public YamlNode serializeObject(Request request, Object object, Serializers serializers) {
         return Yaml.createYamlScalarBuilder().addLine(((Enum<?>) object).name()).buildPlainScalar();
     }
 }
