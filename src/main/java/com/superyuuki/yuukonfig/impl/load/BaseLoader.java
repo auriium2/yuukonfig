@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class BaseLoader<C> implements ConfigLoader<C> {
 
@@ -30,10 +31,21 @@ public class BaseLoader<C> implements ConfigLoader<C> {
         this.deserializers = deserializers;
     }
 
-    public static <C> BaseLoader<C> defaults(File file, Class<C> configType) {
+    public static <C> BaseLoader<C> defaults(Path path, Class<C> configType) {
         CommonRegistry registry = BaseRegistry.defaults();
 
-        return new BaseLoader<>(file, configType, registry.makeSerializers(), registry.makeDeserializers());
+        return new BaseLoader<>(path.toFile(), configType, registry.makeSerializers(), registry.makeDeserializers());
+    }
+
+    public static <C> BaseLoader<C> defaults(Path path, String fileName, Class<C> configType) {
+        CommonRegistry registry = BaseRegistry.defaults();
+
+        return new BaseLoader<>(
+                path.resolve(fileName).toFile(),
+                configType,
+                registry.makeSerializers(),
+                registry.makeDeserializers()
+        );
     }
 
     @Override
@@ -73,5 +85,24 @@ public class BaseLoader<C> implements ConfigLoader<C> {
         }
 
         return config;
+    }
+
+    @Override
+    public C loadWithoutDefaults() {
+        YamlMapping userContent;
+
+        try {
+            userContent = Yaml.createYamlInput(file).readYamlMapping(); //read map
+        } catch (FileNotFoundException e) {
+            userContent = Yaml.createYamlMappingBuilder().build(); //empty map
+        } catch (IOException e) {
+            throw new ConfigIOFailure(file.getName(), e);
+        }
+
+        return deserializers.deserializeTyped(
+                userContent,
+                new UserRequestImpl<>(configType),
+                file.getName()
+        );
     }
 }
