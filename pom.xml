@@ -6,7 +6,7 @@
 
     <groupId>com.superyuuki</groupId>
     <artifactId>yuukonfig</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
         <compiler.version>16</compiler.version>
