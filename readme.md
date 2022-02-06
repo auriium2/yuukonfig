@@ -10,6 +10,7 @@ Configuration for idiots
 - Auto update
 - Really expandable
 - Never write a config parser again
+- Lightweight (Compiled Jar is 50 KB, great for shading)
 
 # Repos
 
