@@ -6,10 +6,10 @@
 
     <groupId>com.superyuuki</groupId>
     <artifactId>yuukonfig</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
 
     <properties>
-        <compiler.version>16</compiler.version>
+        <compiler.version>17</compiler.version>
 
         <maven.compiler.source>${compiler.version}</maven.compiler.source>
         <maven.compiler.target>${compiler.version}</maven.compiler.target>
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>com.amihaiemil.web</groupId>
             <artifactId>eo-yaml</artifactId>
-            <version>6.0.0</version>
+            <version>6.0.1</version>
         </dependency>
 
         <!-- Test !-->
@@ -45,25 +45,25 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.8.1</version>
+            <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.8.1</version>
+            <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.8.1</version>
+            <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-commons</artifactId>
-            <version>1.8.1</version>
+            <version>1.8.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

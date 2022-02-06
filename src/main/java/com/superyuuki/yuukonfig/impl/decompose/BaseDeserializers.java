@@ -10,6 +10,7 @@ import com.superyuuki.yuukonfig.request.UserRequest;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class BaseDeserializers implements Deserializers {
 
@@ -21,6 +22,7 @@ public class BaseDeserializers implements Deserializers {
 
     @Override
     public <T> T deserializeTyped(YamlNode node, UserRequest<T> rq, DeserializerContext ctx) {
+
         Class<T> requested = rq.typedRequestedClass();
 
         Optional<Deserializer> des = deserializers.stream().max(Comparator.comparing(v -> v.handles(requested)));
