@@ -2,8 +2,7 @@ package com.superyuuki.yuukonfig.serializer;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.CommonRegistry;
-import com.superyuuki.yuukonfig.Section;
+import com.superyuuki.yuukonfig.user.Section;
 import com.superyuuki.yuukonfig.compose.Serializers;
 import com.superyuuki.yuukonfig.compose.TypedSerializer;
 import com.superyuuki.yuukonfig.impl.load.BaseRegistry;

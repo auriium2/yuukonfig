@@ -1,6 +1,6 @@
 package com.superyuuki.yuukonfig.serializer.bad;
 
-import com.superyuuki.yuukonfig.Section;
+import com.superyuuki.yuukonfig.user.Section;
 
 interface PackagePrivateConfig extends Section {
 

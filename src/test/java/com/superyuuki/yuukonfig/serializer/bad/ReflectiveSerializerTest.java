@@ -2,10 +2,9 @@ package com.superyuuki.yuukonfig.serializer.bad;
 
 
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.Section;
+import com.superyuuki.yuukonfig.user.Section;
 import com.superyuuki.yuukonfig.TestHelper;
-import com.superyuuki.yuukonfig.impl.load.BaseRegistry;
-import com.superyuuki.yuukonfig.inbuilt.section.ImpossibleReflectiveAccess;
+import com.superyuuki.yuukonfig.inbuilt.section.ImpossibleAccessException;
 import com.superyuuki.yuukonfig.inbuilt.section.TooManyArgsFailure;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ public class ReflectiveSerializerTest {
     @Test
     public void testInlinePrivateConfigShouldFail() {
 
-        Assertions.assertThrows(ImpossibleReflectiveAccess.class, () -> {
+        Assertions.assertThrows(ImpossibleAccessException.class, () -> {
             YamlNode node = TestHelper.serializerTest(InlinePrivateConfig.class);
         });
 
@@ -32,7 +31,7 @@ public class ReflectiveSerializerTest {
     @Test
     public void testPrivateConfigShouldFail() {
 
-        Assertions.assertThrows(ImpossibleReflectiveAccess.class, () -> {
+        Assertions.assertThrows(ImpossibleAccessException.class, () -> {
             YamlNode node = TestHelper.serializerTest(PackagePrivateConfig.class);
         });
     }

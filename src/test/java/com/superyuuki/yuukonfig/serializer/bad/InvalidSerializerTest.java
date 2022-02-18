@@ -1,10 +1,9 @@
 package com.superyuuki.yuukonfig.serializer.bad;
 
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.Section;
+import com.superyuuki.yuukonfig.user.Section;
 import com.superyuuki.yuukonfig.TestHelper;
 import com.superyuuki.yuukonfig.impl.compose.NoSerializerFailure;
-import com.superyuuki.yuukonfig.impl.load.BaseRegistry;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

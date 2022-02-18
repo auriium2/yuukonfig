@@ -1,8 +1,7 @@
 package com.superyuuki.yuukonfig.sameroot;
 
-import com.superyuuki.yuukonfig.Section;
+import com.superyuuki.yuukonfig.user.Section;
 import com.superyuuki.yuukonfig.TestHelper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.logging.LoggerFactory;
 

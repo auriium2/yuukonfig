@@ -1,7 +1,7 @@
 package com.superyuuki.yuukonfig;
 
 
-import com.superyuuki.yuukonfig.annotate.ConfKey;
+import com.superyuuki.yuukonfig.user.Section;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,7 +1,7 @@
 package com.superyuuki.yuukonfig.deserializer;
 
-import com.superyuuki.yuukonfig.Section;
-import com.superyuuki.yuukonfig.annotate.ConfKey;
+import com.superyuuki.yuukonfig.user.Section;
+import com.superyuuki.yuukonfig.user.ConfKey;
 
 public interface DeserializerTestConfig extends Section {
 

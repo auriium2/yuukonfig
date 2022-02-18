@@ -2,7 +2,7 @@ package com.superyuuki.yuukonfig.inbuilt;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.Section;
+import com.superyuuki.yuukonfig.user.Section;
 import com.superyuuki.yuukonfig.TestHelper;
 import com.superyuuki.yuukonfig.impl.load.BaseRegistry;
 import com.superyuuki.yuukonfig.impl.request.UserRequestImpl;

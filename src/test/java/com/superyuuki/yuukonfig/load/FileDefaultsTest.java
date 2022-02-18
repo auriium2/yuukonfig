@@ -1,6 +1,6 @@
 package com.superyuuki.yuukonfig.load;
 
-import com.superyuuki.yuukonfig.Section;
+import com.superyuuki.yuukonfig.user.Section;
 import com.superyuuki.yuukonfig.impl.load.BaseLoader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
