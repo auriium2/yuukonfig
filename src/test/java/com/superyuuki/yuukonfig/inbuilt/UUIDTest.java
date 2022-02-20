@@ -1,11 +1,12 @@
 package com.superyuuki.yuukonfig.inbuilt;
 
 import com.amihaiemil.eoyaml.YamlNode;
+import com.superyuuki.yuukonfig.YuuKonfig;
 import com.superyuuki.yuukonfig.user.Section;
-import com.superyuuki.yuukonfig.TestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public class UUIDTest {
@@ -18,7 +19,7 @@ public class UUIDTest {
 
     @Test
     public void testSerializingUUID() {
-        YamlNode node = TestHelper.serializerTest(UUIDConfig.class);
+        YamlNode node = YuuKonfig.instance().test().serializeTest(UUIDConfig.class);
 
         Assertions.assertEquals("8046dfc5-4ef7-4bd5-831b-05978815148f", node.asMapping().string("someUUID"));
     }
@@ -30,8 +31,8 @@ public class UUIDTest {
     }
 
     @Test
-    public void testDeserializingUUID() {
-        UUIDConfig config = TestHelper.deserializerTest(SOME_UUID_CONFIG, UUIDConfig.class);
+    public void testDeserializingUUID() throws IOException {
+        UUIDConfig config = YuuKonfig.instance().test().deserializeTest(SOME_UUID_CONFIG, UUIDConfig.class);
 
         Assertions.assertEquals(UUID.fromString("8046dfc5-4ef7-4bd5-831b-05978815148f"), config.someUUID());
     }

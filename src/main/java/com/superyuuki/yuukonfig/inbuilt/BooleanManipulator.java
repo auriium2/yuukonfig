@@ -14,9 +14,6 @@ import java.util.Arrays;
 
 public class BooleanManipulator implements Manipulator {
 
-    static {
-        YuuKonfig.instance().register(BooleanManipulator::new);
-    }
 
     private final Manipulation manipulation;
     private final Class<?> useClass;

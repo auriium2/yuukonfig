@@ -20,10 +20,6 @@ import java.util.Map;
 
 public class SectionManipulator implements Manipulator {
 
-    static {
-        YuuKonfig.instance().register(SectionManipulator::new);
-    }
-
     private final Manipulation manipulation;
     private final Class<?> useClass;
 

@@ -14,10 +14,6 @@ import java.util.Arrays;
 
 public class IntManipulator implements Manipulator {
 
-    static {
-        YuuKonfig.instance().register(IntManipulator::new);
-    }
-
     private final Manipulation manipulation;
     private final Class<?> useClass;
 

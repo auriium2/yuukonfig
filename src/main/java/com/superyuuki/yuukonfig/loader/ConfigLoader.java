@@ -19,4 +19,6 @@ public interface ConfigLoader<C> {
      */
     C loadWithoutDefaults() throws BadConfigException;
 
+    C onlyDefaults() throws BadConfigException;
+
 }

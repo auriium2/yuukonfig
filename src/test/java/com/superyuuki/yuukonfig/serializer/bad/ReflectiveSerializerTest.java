@@ -2,10 +2,9 @@ package com.superyuuki.yuukonfig.serializer.bad;
 
 
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.user.Section;
-import com.superyuuki.yuukonfig.TestHelper;
+import com.superyuuki.yuukonfig.YuuKonfig;
 import com.superyuuki.yuukonfig.inbuilt.section.ImpossibleAccessException;
-import com.superyuuki.yuukonfig.inbuilt.section.TooManyArgsFailure;
+import com.superyuuki.yuukonfig.user.Section;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +14,7 @@ public class ReflectiveSerializerTest {
     public void testInlinePrivateConfigShouldFail() {
 
         Assertions.assertThrows(ImpossibleAccessException.class, () -> {
-            YamlNode node = TestHelper.serializerTest(InlinePrivateConfig.class);
+            YamlNode node = YuuKonfig.instance().test().serializeTest(InlinePrivateConfig.class);
         });
 
     }
@@ -32,7 +31,7 @@ public class ReflectiveSerializerTest {
     public void testPrivateConfigShouldFail() {
 
         Assertions.assertThrows(ImpossibleAccessException.class, () -> {
-            YamlNode node = TestHelper.serializerTest(PackagePrivateConfig.class);
+            YamlNode node = YuuKonfig.instance().test().serializeTest(PackagePrivateConfig.class);
         });
     }
 
@@ -48,7 +47,7 @@ public class ReflectiveSerializerTest {
     public void testPublicInlineConfigShouldPass() {
 
         Assertions.assertDoesNotThrow(() -> {
-            YamlNode node = TestHelper.serializerTest(PublicInlineConfig.class);
+            YamlNode node = YuuKonfig.instance().test().serializeTest(PublicInlineConfig.class);
         });
     }
 
@@ -60,8 +59,8 @@ public class ReflectiveSerializerTest {
 
     @Test
     public void testConfigWithParamsShouldFail() {
-        Assertions.assertThrows(TooManyArgsFailure.class, () -> {
-            YamlNode node = TestHelper.serializerTest(ConfigWithParams.class);
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            YamlNode node = YuuKonfig.instance().test().serializeTest(ConfigWithParams.class);
         });
     }
 

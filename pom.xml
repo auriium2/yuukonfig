@@ -6,6 +6,7 @@
 
     <groupId>com.superyuuki</groupId>
     <artifactId>yuukonfig</artifactId>
+    <packaging>pom</packaging>
     <version>2.0.0</version>
 
     <properties>
@@ -25,6 +26,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
                     <source>${compiler.version}</source>
                     <target>${compiler.version}</target>

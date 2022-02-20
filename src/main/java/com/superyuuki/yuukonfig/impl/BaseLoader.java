@@ -63,6 +63,27 @@ public class BaseLoader<T> implements ConfigLoader<T> {
         );
     }
 
+    @Override
+    public T onlyDefaults() throws BadConfigException {
+        YamlMapping defaultContent = manipulation.serializeDefault(configClazz, new String[]{}).asMapping();
+
+        Object config = manipulation.deserialize(defaultContent, "(n/a)", configClazz);
+
+        try {
+            YamlPrinter printer = Yaml.createYamlPrinter(
+                    new FileWriter(configPath.toFile())
+            );
+
+            printer.print(defaultContent); //file map.yml will be created and written.
+        } catch (IOException ioException) {
+            throw new BadConfigException(
+                    String.format("Something went wrong loading a config titled: %s, an IO exception: %s: was thrown.", configPath, ioException)
+            );
+        }
+
+        return configClazz.cast(config);
+    }
+
     YamlMapping loadFrom() throws BadConfigException {
         try {
             return Yaml.createYamlInput(configPath.toFile()).readYamlMapping(); //read map

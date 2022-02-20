@@ -18,10 +18,6 @@ import java.util.List;
 
 public class ListManipulator implements Manipulator {
 
-    static {
-        YuuKonfig.instance().register(ListManipulator::new);
-    }
-
     private final Manipulation manipulation;
     private final Class<?> useClass;
     private final Contextual<Type> type;

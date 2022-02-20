@@ -14,10 +14,6 @@ import java.util.Arrays;
 
 public class DoubleManipulator implements Manipulator {
 
-    static {
-        YuuKonfig.instance().register(DoubleManipulator::new);
-    }
-
     private final Manipulation manipulation;
     private final Class<?> useClass;
 

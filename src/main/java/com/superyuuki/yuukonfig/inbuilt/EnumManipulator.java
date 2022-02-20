@@ -13,9 +13,6 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 
 public class EnumManipulator implements Manipulator {
-    static {
-        YuuKonfig.instance().register(EnumManipulator::new);
-    }
 
     private final Manipulation manipulation;
     private final Class<?> useClass;
