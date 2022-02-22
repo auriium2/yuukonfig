@@ -15,6 +15,7 @@ public class NestedDeserializerTest {
                 bool: true
                 nestedConfig:
                   someint: 2
+                myUUID: wdawdawda
                   
                 """;
 

@@ -30,7 +30,7 @@ public class ListManipulator implements Manipulator {
 
     @Override
     public int handles() {
-        if (useClass.equals(List.class)) {
+        if (List.class.isAssignableFrom(useClass)) {
             return Priority.HANDLE;
         }
 

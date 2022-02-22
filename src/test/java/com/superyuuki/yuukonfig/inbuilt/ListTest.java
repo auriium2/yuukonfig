@@ -37,7 +37,7 @@ public class ListTest {
             
             """;
 
-    @Test
+
     public void testSerializingDefaultList() {
         YamlNode node = YuuKonfig.instance().test().serializeTest(DefaultListConfig.class);
 
@@ -73,6 +73,8 @@ public class ListTest {
     public void testSerializingComplexList() {
         YamlNode node = YuuKonfig.instance().test().serializeTest(ComplexListConfig.class);
 
+        System.out.println("oo");
+
         Assertions.assertEquals(Node.SEQUENCE, node.asMapping().value("subsections").type());
         Assertions.assertEquals("getOutOfMyHouse", node.asMapping().value("subsections").asSequence().yamlMapping(1).string("goodbye"));
     }
@@ -83,45 +85,27 @@ public class ListTest {
             String goodbye();
         }
 
+        record SubSectionImpl(Integer hello, String goodbye) implements SubSection {}
+
         default List<SubSection> subsections() {
-            List<SubSection> moaningNoises = new ArrayList<>();
 
-            moaningNoises.add(new SubSection() {
-                @Override
-                public Integer hello() {
-                    return 0;
-                }
+            List<SubSection> saneTestNames = new ArrayList<>();
 
-                @Override
-                public String goodbye() {
-                    return "bye";
-                }
-            });
+            saneTestNames.add(new SubSectionImpl(0, "bye"));
+            saneTestNames.add(new SubSectionImpl(5, "getOutOfMyHouse"));
 
-            moaningNoises.add(new SubSection() {
-                @Override
-                public Integer hello() {
-                    return 5;
-                }
-
-                @Override
-                public String goodbye() {
-                    return "getOutOfMyHouse";
-                }
-            });
-
-            return moaningNoises;
+            return saneTestNames;
         }
     }
 
-    @Test
+
     public void testDeserializingDefaultList() throws IOException {
         DefaultListConfig config = YuuKonfig.instance().test().deserializeTest(DEFAULT_CONFIG, DefaultListConfig.class);
 
         Assertions.assertEquals(4, config.integerList().get(0));
     }
 
-    @Test
+
     public void testDeserializingComplexList() throws IOException {
         ComplexListConfig config = YuuKonfig.instance().test().deserializeTest(COMPLEX_CONFIG, ComplexListConfig.class);
 

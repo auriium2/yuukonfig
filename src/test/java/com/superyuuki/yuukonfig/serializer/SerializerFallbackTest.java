@@ -3,6 +3,7 @@ package com.superyuuki.yuukonfig.serializer;
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
 import com.superyuuki.yuukonfig.BadValueException;
+import com.superyuuki.yuukonfig.BaseProvider;
 import com.superyuuki.yuukonfig.YuuKonfig;
 import com.superyuuki.yuukonfig.manipulation.Contextual;
 import com.superyuuki.yuukonfig.manipulation.Manipulation;
@@ -20,7 +21,9 @@ public class SerializerFallbackTest {
 
     @Test
     public void testSerializerShouldUseFallback() {
-        YamlNode node = YuuKonfig.instance().test().serializeTest(ConfigWithNoDefaultValue.class);
+
+
+        YamlNode node = new ExtendProvider().create().test().serializeTest(ConfigWithNoDefaultValue.class);
 
         Assertions.assertEquals("hi,bye", node.asMapping().string("dto"));
     }

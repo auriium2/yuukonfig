@@ -61,6 +61,12 @@ public class BaseManipulation implements Manipulation {
                                         .construct(this, as, typeCtx)
                                         .handles()
                         )
-                );
+                ).flatMap(ctor -> {
+                    if (ctor.construct(this, as, typeCtx).handles() > 0) {
+                        return Optional.of(ctor);
+                    }
+
+                    return Optional.empty();
+                });
     }
 }

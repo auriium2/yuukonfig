@@ -18,13 +18,6 @@ public class BadValueDeserializerTest {
             
             """;
 
-
-    @Test
-    public void testNothing() {
-        System.out.println("hi");
-    }
-
-
     @Test
     public void testBadValuesThrowsParsingException() {
 

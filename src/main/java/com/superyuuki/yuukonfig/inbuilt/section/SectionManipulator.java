@@ -1,14 +1,13 @@
 package com.superyuuki.yuukonfig.inbuilt.section;
 
 import com.amihaiemil.eoyaml.*;
-import com.superyuuki.yuukonfig.YuuKonfig;
 import com.superyuuki.yuukonfig.manipulation.Contextual;
-import com.superyuuki.yuukonfig.manipulation.Priority;
-import com.superyuuki.yuukonfig.user.Section;
-import com.superyuuki.yuukonfig.user.ConfComment;
-import com.superyuuki.yuukonfig.user.ConfKey;
 import com.superyuuki.yuukonfig.manipulation.Manipulation;
 import com.superyuuki.yuukonfig.manipulation.Manipulator;
+import com.superyuuki.yuukonfig.manipulation.Priority;
+import com.superyuuki.yuukonfig.user.ConfComment;
+import com.superyuuki.yuukonfig.user.ConfKey;
+import com.superyuuki.yuukonfig.user.Section;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -30,7 +29,7 @@ public class SectionManipulator implements Manipulator {
 
     @Override
     public int handles() {
-        if (Section.class.isAssignableFrom(useClass)) return Priority.HANDLE;
+        if (Section.class.isAssignableFrom(useClass) && useClass.isInterface()) return Priority.HANDLE;
 
         return Priority.DONT_HANDLE;
     }
@@ -75,10 +74,14 @@ public class SectionManipulator implements Manipulator {
     public YamlNode serializeObject(Object object, String[] comment) {
         YamlMappingBuilder builder = Yaml.createYamlMappingBuilder();
 
+        System.out.println("doing: " + useClass.getCanonicalName());
+
         for (Method method : useClass.getMethods()) {
+            String key = getKey(method);
+            System.out.println("working on: " + key);
+
             checkArgs(method);
 
-            String key = getKey(method);
             String[] comments = getComment(method);
             Object toSerialize = new ProxyForwarder(method, object).invoke(); //get the return of the method
 
@@ -114,7 +117,11 @@ public class SectionManipulator implements Manipulator {
             String[] comments = getComment(method);
             YamlNode serialized;
 
+            System.out.println("working on: " + key);
+
             if (method.isDefault()) {
+
+                System.out.println("defaulting: " + key);
                 serialized = manipulation.serialize(
                         new ProxyForwarder(method, proxy).invoke(),
                         comments,
@@ -128,18 +135,20 @@ public class SectionManipulator implements Manipulator {
                 );
             }
 
-            builder.add(key, serialized);
+            System.out.println("finished: " + key + " : " + serialized);
+
+            builder = builder.add(key, serialized);
         }
 
         return builder.build(Arrays.asList(comment));
     }
 
-    // utility //
+
 
     void checkArgs(Method method) {
         if (method.getParameterCount() != 0) {
             throw new IllegalStateException(
-                    String.format("The config interface method %s cannot have arguments!", method.getName())
+                    String.format("The config interface method '%s' cannot have arguments!", method.getName())
             );
         }
     }
