@@ -1,7 +1,7 @@
 package com.superyuuki.yuukonfig.load;
 
-import com.superyuuki.yuukonfig.Section;
-import com.superyuuki.yuukonfig.impl.load.BaseLoader;
+import com.superyuuki.yuukonfig.YuuKonfig;
+import com.superyuuki.yuukonfig.user.Section;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -15,15 +15,15 @@ public class FileDefaultsTest {
 
     @Test
     public void testOfTheLoading(@TempDir Path file) {
-        LoadableConfigTest test = BaseLoader.defaults(file, "my_config.yml", LoadableConfigTest.class).load();
+        var loader = YuuKonfig.instance().loader(LoadableConfigTest.class, file, "my_config.yml");
+
+        LoadableConfigTest test = loader.load();
 
         Assertions.assertEquals("woowooo", test.subsection().whatever());
 
-        LoadableConfigTest noDefaults = BaseLoader.defaults(file, "my_config.yml", LoadableConfigTest.class).loadWithoutDefaults();
+        LoadableConfigTest noDefaults = loader.loadWithoutDefaults();
 
         Assertions.assertEquals("woowooo", noDefaults.subsection().whatever());
-
-
     }
 
     public interface LoadableConfigTest extends Section {

@@ -1,10 +1,8 @@
 package com.superyuuki.yuukonfig.serializer.bad;
 
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.Section;
-import com.superyuuki.yuukonfig.TestHelper;
-import com.superyuuki.yuukonfig.impl.compose.NoSerializerFailure;
-import com.superyuuki.yuukonfig.impl.load.BaseRegistry;
+import com.superyuuki.yuukonfig.YuuKonfig;
+import com.superyuuki.yuukonfig.user.Section;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +10,8 @@ public class InvalidSerializerTest {
 
     @Test
     public void testNoSerializerShouldFail() {
-        Assertions.assertThrows(NoSerializerFailure.class, () -> {
-            YamlNode node = TestHelper.serializerTest(ConfigWithNonSerializableValue.class);
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            YamlNode node = YuuKonfig.instance().test().serializeTest(ConfigWithNonSerializableValue.class);
         });
     }
 
@@ -29,8 +27,8 @@ public class InvalidSerializerTest {
 
     @Test
     public void testNoSerializerDefaultShouldFail() {
-        Assertions.assertThrows(NoSerializerFailure.class, () -> {
-            YamlNode node = TestHelper.serializerTest(ConfigWithNonSerializableDefaultValue.class);
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            YamlNode node = YuuKonfig.instance().test().serializeTest(ConfigWithNonSerializableDefaultValue.class);
         });
     }
 
@@ -47,7 +45,7 @@ public class InvalidSerializerTest {
     @Test
     public void testSerializableValueShouldPass() {
         Assertions.assertDoesNotThrow(() -> {
-            YamlNode node = TestHelper.serializerTest(ConfigWithSerializableValue.class);
+            YamlNode node = YuuKonfig.instance().test().serializeTest(ConfigWithSerializableValue.class);
         });
     }
 

@@ -1,18 +1,14 @@
 package com.superyuuki.yuukonfig.inbuilt;
 
-import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
-import com.superyuuki.yuukonfig.Section;
-import com.superyuuki.yuukonfig.TestHelper;
-import com.superyuuki.yuukonfig.impl.load.BaseRegistry;
-import com.superyuuki.yuukonfig.impl.request.UserRequestImpl;
+import com.superyuuki.yuukonfig.YuuKonfig;
+import com.superyuuki.yuukonfig.user.Section;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 public class EnumTest {
-
 
     public enum Dingle {
         HOUSE,
@@ -29,7 +25,7 @@ public class EnumTest {
 
     @Test
     public void testSerializingEnums() {
-        YamlNode node = TestHelper.serializerTest(EnumConfig.class);
+        YamlNode node = YuuKonfig.instance().test().serializeTest(EnumConfig.class);
 
         Assertions.assertEquals("COWS", node.asMapping().string("dongle"));
     }
@@ -42,13 +38,7 @@ public class EnumTest {
 
     @Test
     public void testDeserializingEnums() throws IOException {
-        YamlNode node = Yaml.createYamlInput(SOME_ENUM_CONFIG).readYamlMapping();
-
-        EnumConfig config = BaseRegistry.defaults().makeDeserializers().deserializeTyped(
-                node,
-                new UserRequestImpl<>(EnumConfig.class),
-                "virtualconfig"
-        );
+        EnumConfig config = YuuKonfig.instance().test().deserializeTest(SOME_ENUM_CONFIG, EnumConfig.class);
 
         Assertions.assertEquals(Dingle.HOUSE, config.dongle());
     }
