@@ -38,6 +38,7 @@ public class ListTest {
             """;
 
 
+    @Test
     public void testSerializingDefaultList() {
         YamlNode node = YuuKonfig.instance().test().serializeTest(DefaultListConfig.class);
 
@@ -99,6 +100,7 @@ public class ListTest {
     }
 
 
+    @Test
     public void testDeserializingDefaultList() throws IOException {
         DefaultListConfig config = YuuKonfig.instance().test().deserializeTest(DEFAULT_CONFIG, DefaultListConfig.class);
 
@@ -106,6 +108,7 @@ public class ListTest {
     }
 
 
+    @Test
     public void testDeserializingComplexList() throws IOException {
         ComplexListConfig config = YuuKonfig.instance().test().deserializeTest(COMPLEX_CONFIG, ComplexListConfig.class);
 

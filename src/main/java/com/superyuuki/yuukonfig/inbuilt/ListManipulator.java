@@ -4,7 +4,6 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
 import com.amihaiemil.eoyaml.YamlSequenceBuilder;
 import com.superyuuki.yuukonfig.BadValueException;
-import com.superyuuki.yuukonfig.YuuKonfig;
 import com.superyuuki.yuukonfig.manipulation.Contextual;
 import com.superyuuki.yuukonfig.manipulation.Manipulation;
 import com.superyuuki.yuukonfig.manipulation.Manipulator;
@@ -62,9 +61,12 @@ public class ListManipulator implements Manipulator {
         //TODO contextual generic key
         YamlSequenceBuilder listBuilder = Yaml.createYamlSequenceBuilder();
 
+        Class<?> as = getGenericTypeSer();
+
+
         for (Object subject : list) {
             //TODO sameness check
-            YamlNode toAdd = manipulation.serialize(subject, new String[]{}, Contextual.empty()); //List<List<T>> wont work
+            YamlNode toAdd = manipulation.serialize(subject, as, new String[]{}, Contextual.empty()); //List<List<T>> wont work
 
             listBuilder = listBuilder.add(toAdd);
         }
@@ -76,6 +78,19 @@ public class ListManipulator implements Manipulator {
     @Override
     public YamlNode serializeDefault(String[] comment) {
         return Yaml.createYamlSequenceBuilder().build(Arrays.asList(comment));
+    }
+
+    Class<?> getGenericTypeSer() {
+        if (!type.present()) throw new IllegalStateException("No type defined for list!");
+
+        Class<?> actualTypeArgument;
+        try {
+            actualTypeArgument = (Class<?>) ((ParameterizedType) type.get()).getActualTypeArguments()[0];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new IllegalStateException("not enough arguments for generic in"  + manipulation.configName());
+        }
+
+        return actualTypeArgument;
     }
 
     Class<?> getGenericType(String key) {

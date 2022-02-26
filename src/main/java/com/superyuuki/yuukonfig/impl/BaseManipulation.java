@@ -28,10 +28,9 @@ public class BaseManipulation implements Manipulation {
     }
 
     @Override
-    public YamlNode serialize(Object object, String[] comment, Contextual<Type> typeCtx) {
-        Class<?> as = object.getClass();
-        ManipulatorConstructor ctor = search(as, typeCtx).orElseThrow(() -> new IllegalStateException("No such manipulator for type: " + as.getCanonicalName()));
-        Manipulator manipulator = ctor.construct(this, as, typeCtx);
+    public YamlNode serialize(Object object, Class<?> under, String[] comment, Contextual<Type> typeCtx) {
+        ManipulatorConstructor ctor = search(under, typeCtx).orElseThrow(() -> new IllegalStateException("No such manipulator for type: " + under.getCanonicalName()));
+        Manipulator manipulator = ctor.construct(this, under, typeCtx);
 
         return manipulator.serializeObject(object, comment);
     }

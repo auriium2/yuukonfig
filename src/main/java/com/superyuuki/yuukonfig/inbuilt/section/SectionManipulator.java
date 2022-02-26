@@ -29,7 +29,7 @@ public class SectionManipulator implements Manipulator {
 
     @Override
     public int handles() {
-        if (Section.class.isAssignableFrom(useClass) && useClass.isInterface()) return Priority.HANDLE;
+        if (Section.class.isAssignableFrom(useClass)) return Priority.HANDLE;
 
         return Priority.DONT_HANDLE;
     }
@@ -74,18 +74,26 @@ public class SectionManipulator implements Manipulator {
     public YamlNode serializeObject(Object object, String[] comment) {
         YamlMappingBuilder builder = Yaml.createYamlMappingBuilder();
 
-        System.out.println("doing: " + useClass.getCanonicalName());
-
         for (Method method : useClass.getMethods()) {
-            String key = getKey(method);
-            System.out.println("working on: " + key);
-
             checkArgs(method);
 
+            String key = getKey(method);
+            Class<?> as = method.getReturnType();
             String[] comments = getComment(method);
             Object toSerialize = new ProxyForwarder(method, object).invoke(); //get the return of the method
 
-            YamlNode serialized = manipulation.serialize(toSerialize, comments, Contextual.present(method.getGenericReturnType()));
+
+
+
+
+            YamlNode serialized = manipulation.serialize(
+                    toSerialize,
+                    as,
+                    comments,
+                    Contextual.present(
+                            method.getGenericReturnType()
+                    )
+            );
 
             builder = builder.add(key, serialized);
 
@@ -113,6 +121,7 @@ public class SectionManipulator implements Manipulator {
         for (Method method : useClass.getMethods()) {
             checkArgs(method);
 
+            Class<?> returnType = method.getReturnType();
             String key = getKey(method);
             String[] comments = getComment(method);
             YamlNode serialized;
@@ -124,12 +133,13 @@ public class SectionManipulator implements Manipulator {
                 System.out.println("defaulting: " + key);
                 serialized = manipulation.serialize(
                         new ProxyForwarder(method, proxy).invoke(),
+                        returnType,
                         comments,
                         Contextual.present(method.getGenericReturnType())
                 );
             } else {
                 serialized = manipulation.serializeDefault(
-                        method.getReturnType(),
+                        returnType,
                         comments,
                         Contextual.present(method.getGenericReturnType())
                 );

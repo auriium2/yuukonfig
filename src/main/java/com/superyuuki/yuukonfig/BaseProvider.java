@@ -16,6 +16,7 @@ public class BaseProvider implements YuuKonfigProvider {
                 .register(IntManipulator::new)
                 .register(StringManipulator::new)
                 .register(DoubleManipulator::new)
+                .register(UUIDManipulator::new)
                 .register(ListManipulator::new);
     }
 

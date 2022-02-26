@@ -46,16 +46,14 @@ public class NotInterfaceSuperclassTest {
 
     @Test
     public void testShouldThrowIfClassIsUsed() {
-        Assertions.assertThrows(IllegalStateException.class, () -> {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
             YuuKonfig.instance().test().serializeTest(NonInterfaceSubsectionTest.class);
         });
     }
 
     @Test
-    public void testShouldThrowIfRecordIsUsed() {
-        Assertions.assertThrows(IllegalStateException.class, () -> {
-            YuuKonfig.instance().test().serializeTest(NonInterfaceRecordTest.class);
-        });
+    public void testShouldNotThrowIfInterfaceUsedWithRecord() {
+        YuuKonfig.instance().test().serializeTest(NonInterfaceRecordTest.class);
     }
 
 
