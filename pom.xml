@@ -4,12 +4,14 @@
 
     <groupId>com.superyuuki</groupId>
     <artifactId>yuukonfig</artifactId>
+
     <version>2.0.1-SNAPSHOT</version>
 
     <scm>
         <developerConnection>scm:git:https://github.com/superyuuki/yuukonfig.git</developerConnection>
       <tag>HEAD</tag>
   </scm>
+
 
     <properties>
         <compiler.version>17</compiler.version>
