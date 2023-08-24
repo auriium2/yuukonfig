@@ -4,6 +4,7 @@
 
     <groupId>com.superyuuki</groupId>
     <artifactId>yuukonfig</artifactId>
+    <packaging>pom</packaging>
 
     <version>2.0.1-SNAPSHOT</version>
 
@@ -11,6 +12,10 @@
         <developerConnection>scm:git:https://github.com/superyuuki/yuukonfig.git</developerConnection>
       <tag>HEAD</tag>
   </scm>
+    <modules>
+        <module>yuukonfig-yaml</module>
+        <module>yuukonfig-core</module>
+    </modules>
 
 
     <properties>
@@ -40,11 +45,7 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>com.amihaiemil.web</groupId>
-            <artifactId>eo-yaml</artifactId>
-            <version>6.0.1</version>
-        </dependency>
+
 
         <!-- Test !-->
 
