@@ -18,9 +18,9 @@ Configuration for idiots
 
 <dependencies>
     <dependency>
-        <groupId>com.superyuuki</groupId>
-        <artifactId>yuukonfig</artifactId>
-        <version>1.0.0</version>
+      <groupId>com.superyuuki</groupId>
+      <artifactId>yuukonfig-core</artifactId>
+      <version>3.0.0</version>
     </dependency>
 </dependencies>
 
@@ -32,6 +32,23 @@ Configuration for idiots
     </repository>
 </repositories>
 
+```
+
+**Then pick either**
+```
+<dependency>
+  <groupId>com.superyuuki</groupId>
+  <artifactId>yuukonfig-toml</artifactId>
+  <version>3.0.0</version>
+</dependency>
+```
+or
+```
+<dependency>
+  <groupId>com.superyuuki</groupId>
+  <artifactId>yuukonfig-yaml</artifactId>
+  <version>3.0.0</version>
+</dependency>
 ```
 
 # Use
