@@ -6,7 +6,7 @@
     <artifactId>yuukonfig</artifactId>
     <packaging>pom</packaging>
 
-    <version>3.0.0</version>
+    <version>3.0.2</version>
 
     <scm>
         <developerConnection>scm:git:https://github.com/superyuuki/yuukonfig.git</developerConnection>
