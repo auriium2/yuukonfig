@@ -42,6 +42,10 @@ public class TomlScalar implements Scalar {
 
     @Override
     public <T> T rawAccess(Class<T> clazz) throws ClassCastException {
+        if (clazz == Object.class) {
+            return clazz.cast(wrapped);
+        }
+
         throw new ClassCastException("is: a toml");
     }
 

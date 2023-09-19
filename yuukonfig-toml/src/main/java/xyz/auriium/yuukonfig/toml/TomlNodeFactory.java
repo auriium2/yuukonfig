@@ -68,7 +68,12 @@ public class TomlNodeFactory implements RawNodeFactory {
 
     @Override
     public Mapping loadFromFile(Path path) {
-        return loadFromToml(new Toml().read(path.toFile()));
+        if (!path.toFile().exists() || !path.toFile().isFile()) {
+            return new TomlMapping(new HashMap<>()); //empty
+        } else {
+            return loadFromToml(new Toml().read(path.toFile()));
+        }
+
     }
 
 
@@ -132,12 +137,24 @@ public class TomlNodeFactory implements RawNodeFactory {
             Node newNode = newMap.get(key);
             Node oldNode = original.get(key);
 
+            if (oldNode == null) { //no conflicts!
+                original.put(key, newMap.get(key));
+
+                continue;
+            }
 
             if (newNode.type() == Node.Type.MAPPING && oldNode.type() == Node.Type.MAPPING) {
+                //conflict. Both are maps tho, so merge!
+
                 Map<String, Node> originalChild = (Map<String, Node>) oldNode.rawAccess(Map.class);
                 Map<String, Node> newChild = (Map<String, Node>) newNode.rawAccess(Map.class);
                 original.put(key, new TomlMapping(iterateMerge(originalChild, newChild)));
-            } else if (newNode.type() == Node.Type.SEQUENCE && oldNode.type() == Node.Type.SEQUENCE) {
+
+                continue;
+            }
+            if (newNode.type() == Node.Type.SEQUENCE && oldNode.type() == Node.Type.SEQUENCE) {
+                //conflict. Both are lists, so merge!
+
                 List<Node> originalChild = (List<Node>) oldNode.rawAccess(List.class);
                 List<Node> newChild = (List<Node>) newNode.rawAccess(List.class);
                 for (Node each : newChild) {
@@ -145,9 +162,15 @@ public class TomlNodeFactory implements RawNodeFactory {
                         originalChild.add(each);
                     }
                 }
-            } else {
-                original.put(key, newMap.get(key));
+                continue;
             }
+
+            //conflict. Both are scalars, use the original from the original map
+
+            //original.put(key, newMap.get(key));
+
+
+
         }
         return original;
     }
@@ -163,11 +186,63 @@ public class TomlNodeFactory implements RawNodeFactory {
 
     @Override
     public void writeToFile(Mapping toWrite, Path location) {
+        //build origin map without toml maps
+
+
+        Map<String, Object> inverse = toMap(toWrite);
+
         try {
-            new TomlWriter.Builder().build().write(toWrite.rawAccess(Map.class), location.toFile());
+            new TomlWriter.Builder().build().write(inverse, location.toFile());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
 
+    }
+
+    public Map<String, Object> toMap(Mapping mapping) {
+        Map<String,Node> mappingAsMap = (Map<String,Node>) mapping.rawAccess(Map.class);
+        Map<String, Object> toReturn = new HashMap<>();
+
+        for (Map.Entry<String, Node> e : mappingAsMap.entrySet()) {
+            Node child = e.getValue();
+            String key = e.getKey();
+
+            if (child.type() == Node.Type.MAPPING) {
+                toReturn.put(key, toMap(child.asMapping()));
+                continue;
+            }
+
+            if (child.type() == Node.Type.SEQUENCE) {
+                toReturn.put(key, toList(child.asSequence()));
+                continue;
+            }
+
+            toReturn.put(key, child.asScalar().rawAccess(Object.class));
+        }
+
+        return toReturn;
+    }
+
+    public List<Object> toList(Sequence sequence) {
+        List<Node> list = (List<Node>) sequence.rawAccess(List.class);
+        List<Object> toReturn = new ArrayList<>();
+
+        for (Node child : list) {
+
+            if (child.type() == Node.Type.MAPPING) {
+                toReturn.add(toMap(child.asMapping()));
+                continue;
+            }
+
+            if (child.type() == Node.Type.SEQUENCE) {
+                toReturn.add(toList(child.asSequence()));
+                continue;
+            }
+
+            toReturn.add(child.asScalar().rawAccess(Object.class));
+
+        }
+
+        return toReturn;
     }
 }
