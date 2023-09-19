@@ -12,7 +12,6 @@ public interface Mapping extends Node {
     Sequence yamlSequence(String key);
     String string(String key);
     String foldedBlockScalar(String key);
-    Collection<String> literalBlockScalar(String key);
     Node value(String key);
     int integer(String key);
     float floatNumber(String key);
@@ -20,6 +19,8 @@ public interface Mapping extends Node {
     long longNumber(String key);
     LocalDate date(String key);
     LocalDateTime dateTime(String key);
+
+
 
 
 }

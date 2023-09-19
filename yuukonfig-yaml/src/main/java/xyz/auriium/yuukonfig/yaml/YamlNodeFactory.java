@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-public class YamlRawNodeFactory implements RawNodeFactory {
+public class YamlNodeFactory implements RawNodeFactory {
     @Override
     public SequenceBuilder makeSequenceBuilder() {
         return new SequenceBuilder() {

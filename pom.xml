@@ -15,6 +15,7 @@
     <modules>
         <module>yuukonfig-yaml</module>
         <module>yuukonfig-core</module>
+        <module>yuukonfig-toml</module>
     </modules>
 
 

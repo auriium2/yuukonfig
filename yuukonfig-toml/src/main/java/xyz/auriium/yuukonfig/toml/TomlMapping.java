@@ -1,8 +1,5 @@
-package xyz.auriium.yuukonfig.yaml;
+package xyz.auriium.yuukonfig.toml;
 
-import com.amihaiemil.eoyaml.Yaml;
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
 import xyz.auriium.yuukonfig.core.err.BadValueException;
 import xyz.auriium.yuukonfig.core.node.Mapping;
 import xyz.auriium.yuukonfig.core.node.Node;
@@ -11,77 +8,88 @@ import xyz.auriium.yuukonfig.core.node.Sequence;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class YamlMappingShiv implements Mapping {
+public class TomlMapping implements Mapping {
 
-    final YamlMapping yamlMapping;
+    final Map<String,Node> map;
 
-    public YamlMappingShiv(YamlMapping yamlMapping) {
-        this.yamlMapping = yamlMapping;
+    public TomlMapping(Map<String,Node> map) {
+        this.map = map;
     }
 
     @Override
     public Mapping yamlMapping(String key) {
-        return new YamlMappingShiv(yamlMapping.yamlMapping(key));
+        Node output = map.get(key);
+        if (output.type() != Type.MAPPING) {
+            throw new IllegalStateException("not a map!");
+        }
+
+        return output.asMapping();
     }
 
     @Override
     public Sequence yamlSequence(String key) {
-        return new YamlSequenceShiv(yamlMapping.yamlSequence(key));
+        Node output = map.get(key);
+        if (output.type() != Type.SEQUENCE) {
+            throw new IllegalStateException("not a map!");
+        }
+
+
+        return output.asSequence();
     }
 
     @Override
     public String string(String key) {
-        return yamlMapping.string(key);
+        return map.get(key).asScalar().value();
     }
 
     @Override
     public String foldedBlockScalar(String key) {
-        return yamlMapping.foldedBlockScalar(key);
+        return map.get(key).asScalar().value();
     }
+
 
     @Override
     public Node value(String key) {
-
-        YamlNode y = yamlMapping.value(key);
-
-        return YamlSequenceShiv.CONVERT.apply(y);
+        return map.get(key);
     }
 
     @Override
     public int integer(String key) {
-        return yamlMapping.integer(key);
+        return Integer.parseInt(map.get(key).asScalar().value());
     }
 
     @Override
     public float floatNumber(String key) {
-        return yamlMapping.floatNumber(key);
+        return Float.parseFloat(map.get(key).asScalar().value());
     }
 
     @Override
     public double doubleNumber(String key) {
-        return yamlMapping.doubleNumber(key);
+        return Double.parseDouble(map.get(key).asScalar().value());
     }
 
     @Override
     public long longNumber(String key) {
-        return yamlMapping.longNumber(key);
+        return Long.parseLong(map.get(key).asScalar().value());
     }
 
     @Override
     public LocalDate date(String key) {
-        return yamlMapping.date(key);
+        return LocalDate.parse(map.get(key).asScalar().value());
     }
 
     @Override
     public LocalDateTime dateTime(String key) {
-        return yamlMapping.dateTime(key);
+        return LocalDateTime.parse(map.get(key).asScalar().value());
     }
 
     @Override
     public boolean isEmpty() {
-        return yamlMapping.isEmpty();
+        return map.isEmpty();
     }
 
     @Override
@@ -91,7 +99,7 @@ public class YamlMappingShiv implements Mapping {
 
     @Override
     public Scalar asScalar() throws BadValueException, ClassCastException {
-        throw new ClassCastException("this is a mapping");
+        throw new ClassCastException("not a scalar");
     }
 
     @Override
@@ -101,16 +109,15 @@ public class YamlMappingShiv implements Mapping {
 
     @Override
     public Sequence asSequence() throws BadValueException, ClassCastException {
-        throw new ClassCastException("this is a mapping");
+        throw new ClassCastException("not a sequence");
     }
 
     @Override
     public <T> T rawAccess(Class<T> clazz) throws ClassCastException {
-        if (clazz == YamlNode.class) {
-            return clazz.cast(yamlMapping);
+        if (clazz == Map.class) {
+            return (T) map;
         }
 
-        throw new ClassCastException("invalid access of unexpected type");
-
+        throw new ClassCastException("is: a toml");
     }
 }
