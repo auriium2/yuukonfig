@@ -57,23 +57,23 @@ or
 
 public interface InternalConfig extends Section {
 
-    @ConfKey("number")
+    @Key("number")
     default Integer defaultInt() {
         return 5;
     }
 
-    @ConfKey("bool")
+    @Key("bool")
     default Boolean defaultBool() {
         return true;
     }
 
-    @ConfKey("nestedConfig")
+    @Key("nestedConfig")
     NestedConfig notDefaultConfig();
 
 
     interface NestedConfig extends Section {
 
-        @ConfKey("someint")
+        @Key("someint")
         default Integer nestedInteger() {
             return 10;
         }
