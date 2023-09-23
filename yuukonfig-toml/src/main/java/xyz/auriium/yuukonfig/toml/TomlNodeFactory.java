@@ -191,7 +191,13 @@ public class TomlNodeFactory implements RawNodeFactory {
 
         Map<String, Object> inverse = toMap(toWrite);
 
+
+
         try {
+            if (!location.toFile().exists()) {
+                location.toFile().createNewFile();
+            }
+
             new TomlWriter.Builder().build().write(inverse, location.toFile());
         } catch (IOException e) {
             throw new IllegalStateException(e);
