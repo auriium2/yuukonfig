@@ -52,12 +52,12 @@ public class TomlNodeFactory implements RawNodeFactory {
     }
 
     @Override
-    public Node scalarOf(String data, String inlineComment, String... aboveComment) {
+    public Node scalarOf(Object data, String inlineComment, String... aboveComment) {
         return new TomlScalar(data);
     }
 
     @Override
-    public Node scalarOf(String data, String... aboveComment) { //comments disappear :(
+    public Node scalarOf(Object data, String... aboveComment) { //comments disappear :(
         return new TomlScalar(data);
     }
 

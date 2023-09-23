@@ -23,8 +23,8 @@ public interface RawNodeFactory {
     SequenceBuilder makeSequenceBuilder();
     MappingBuilder makeMappingBuilder();
 
-    Node scalarOf(String data, String inlineComment, String... aboveComment);
-    Node scalarOf(String data, String... aboveComment);
+    Node scalarOf(Object data, String inlineComment, String... aboveComment);
+    Node scalarOf(Object data, String... aboveComment);
 
     Mapping loadString(String simulatedConfigInStringForm);
     Mapping loadFromFile(Path path);

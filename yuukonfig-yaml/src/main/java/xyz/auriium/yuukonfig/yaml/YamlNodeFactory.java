@@ -52,22 +52,22 @@ public class YamlNodeFactory implements RawNodeFactory {
     }
 
     @Override
-    public Node scalarOf(String data, String inlineComment, String... aboveComment) {
+    public Node scalarOf(Object data, String inlineComment, String... aboveComment) {
         if (aboveComment.length == 0) {
-            return new YamlScalarShiv(Yaml.createYamlScalarBuilder().addLine(data).buildPlainScalar(inlineComment));
+            return new YamlScalarShiv(Yaml.createYamlScalarBuilder().addLine(data.toString()).buildPlainScalar(inlineComment));
         }
-        return new YamlScalarShiv(Yaml.createYamlScalarBuilder().addLine(data).buildPlainScalar(Arrays.asList(aboveComment), inlineComment));
+        return new YamlScalarShiv(Yaml.createYamlScalarBuilder().addLine(data.toString()).buildPlainScalar(Arrays.asList(aboveComment), inlineComment));
 
     }
 
     @Override
-    public Node scalarOf(String data, String... aboveComment) {
+    public Node scalarOf(Object data, String... aboveComment) {
         if (aboveComment.length == 0) {
-            return new YamlScalarShiv(Yaml.createYamlScalarBuilder().addLine(data).buildPlainScalar());
+            return new YamlScalarShiv(Yaml.createYamlScalarBuilder().addLine(data.toString()).buildPlainScalar());
 
         }
 
-        return new YamlScalarShiv(Yaml.createYamlScalarBuilder().addLine(data).buildPlainScalar(Arrays.asList(aboveComment), ""));
+        return new YamlScalarShiv(Yaml.createYamlScalarBuilder().addLine(data.toString()).buildPlainScalar(Arrays.asList(aboveComment), ""));
     }
 
     @Override
