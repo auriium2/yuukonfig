@@ -1,5 +1,13 @@
 package xyz.auriium.yuukonfig.core.impl.manipulator.section;
 
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.description.modifier.Visibility;
+import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy;
+import net.bytebuddy.implementation.*;
+import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.pool.TypePool;
 import xyz.auriium.yuukonfig.core.annotate.Comment;
 import xyz.auriium.yuukonfig.core.annotate.Key;
 import xyz.auriium.yuukonfig.core.annotate.Section;
@@ -12,10 +20,9 @@ import xyz.auriium.yuukonfig.core.node.Mapping;
 import xyz.auriium.yuukonfig.core.node.Node;
 import xyz.auriium.yuukonfig.core.node.RawNodeFactory;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +46,24 @@ public class SectionManipulator implements Manipulator {
         return Priority.DONT_HANDLE;
     }
 
+    static final ByteBuddy BUDDY = new ByteBuddy();
+
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Inner {
+
+    }
+
+
     @Override
     public Object deserialize(Node node, String exceptionalKey) {
+    /*    System.out.println(useClass.getName());
+        System.out.println("using loader: " + useClass.getClassLoader().getName());
+*/
+        //if (useClass.isAnnotationPresent(Inner.class)) throw new IllegalStateException(useClass.getSimpleName() + "_" + useClass.getClassLoader().getName() );
+
         Mapping mapping = node.asMapping();
 
-        Map<String, Object> backingMap = new HashMap<>();
+        Map<Method, Object> backingMap = new HashMap<>();
 
         for (Method method : useClass.getMethods()) {
             checkArgs(method);
@@ -64,15 +84,53 @@ public class SectionManipulator implements Manipulator {
                     )
             );
 
-            backingMap.put(method.getName(), object);
+            backingMap.put(method, object);
         }
 
-        return Proxy.newProxyInstance(
-                Thread.currentThread().getContextClassLoader(),
-                new Class[]{ useClass },
-                new MappedInvocationHandler(Map.copyOf(backingMap))
+        try {
 
-        );
+            //according to the bytebuddy site this generates class that could be 4x faster than prev impl
+
+            //if (true) throw new IllegalStateException(useClass.getName());
+            //in parallel classloader.. now what?
+
+
+            var builder = BUDDY.subclass(useClass)
+                    //default methods
+                    .name(useClass.getPackageName() + "." + useClass.getSimpleName())
+                    .suffix("Generated_" + Integer.toHexString(hashCode()));
+
+            if (useClass.getEnclosingClass() != null) {
+                //builder = builder.innerTypeOf(useClass.getEnclosingClass());
+            }
+
+            builder
+                    .method(ElementMatchers.isEquals())
+                    .intercept(EqualsMethod.isolated());
+                   /* .method(ElementMatchers.isHashCode())
+                    .intercept(HashCodeMethod.usingDefaultOffset());*/
+
+            for (Map.Entry<Method, Object> values : backingMap.entrySet()) { //every method on the new implementation will only do one thing (return config value)
+                builder = builder
+                        .method(ElementMatchers.is(values.getKey()))
+                        .intercept(FixedValue.value(values.getValue()));
+            }
+
+            DynamicType.Unloaded<?> unloaded = builder.make();
+
+            ClassLoader loaderToUse = useClass.getClassLoader();
+
+            //TODO I HAVE NO FUCKING CLUE WHY THIS WORKS ITS PROBABLY REALLY REALLY BAD LOL
+            DynamicType.Loaded<?> loaded = unloaded.load(loaderToUse, ClassLoadingStrategy.ForBootstrapInjection.Default.INJECTION);
+
+            return loaded
+                    .getLoaded()
+                    .getDeclaredConstructor()
+                    .newInstance();
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Something terribly wrong has happened in YuuKonfig", e);
+        }
+
     }
 
     @Override

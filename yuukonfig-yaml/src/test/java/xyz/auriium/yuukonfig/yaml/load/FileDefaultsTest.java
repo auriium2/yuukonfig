@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import xyz.auriium.yuukonfig.core.annotate.Section;
+import xyz.auriium.yuukonfig.core.impl.manipulator.section.SectionManipulator;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class FileDefaultsTest {
 
         Sub subsection();
 
+        @SectionManipulator.Inner
         interface Sub extends Section {
             default String whatever() {
                 return "woowooo";

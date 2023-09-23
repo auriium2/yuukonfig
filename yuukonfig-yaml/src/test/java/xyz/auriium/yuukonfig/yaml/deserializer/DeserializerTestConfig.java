@@ -14,7 +14,7 @@ public interface DeserializerTestConfig extends Section {
     @Key("nestedConfig")
     NestedConfig notDefaultConfig();
 
-    interface NestedConfig extends Section {
+    public interface NestedConfig extends Section {
 
         @Key("someint")
         Integer nestedInteger();
