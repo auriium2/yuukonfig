@@ -20,7 +20,7 @@ Configuration for idiots
     <dependency>
       <groupId>com.superyuuki</groupId>
       <artifactId>yuukonfig-core</artifactId>
-      <version>3.0.3</version>
+      <version>3.1.0</version>
     </dependency>
 </dependencies>
 
@@ -39,7 +39,7 @@ Configuration for idiots
 <dependency>
   <groupId>com.superyuuki</groupId>
   <artifactId>yuukonfig-toml</artifactId>
-  <version>3.0.3</version>
+  <version>3.1.0</version>
 </dependency>
 ```
 or
@@ -47,7 +47,7 @@ or
 <dependency>
   <groupId>com.superyuuki</groupId>
   <artifactId>yuukonfig-yaml</artifactId>
-  <version>3.0.3</version>
+  <version>3.1.0</version>
 </dependency>
 ```
 
