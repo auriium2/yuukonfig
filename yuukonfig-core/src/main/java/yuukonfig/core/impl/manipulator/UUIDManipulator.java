@@ -2,6 +2,7 @@ package yuukonfig.core.impl.manipulator;
 
 import yuukonfig.core.err.BadValueException;
 
+import yuukonfig.core.impl.safe.ManipulatorSafe;
 import yuukonfig.core.manipulation.Contextual;
 import yuukonfig.core.manipulation.Manipulation;
 import yuukonfig.core.manipulation.Priority;
@@ -13,27 +14,19 @@ import yuukonstants.GenericPath;
 import java.lang.reflect.Type;
 import java.util.UUID;
 
-public class UUIDManipulator implements Manipulator {
+public class UUIDManipulator implements ManipulatorSafe<UUID> {
 
     final Manipulation manipulation;
-    final Class<?> useClass;
     final RawNodeFactory factory;
 
     public UUIDManipulator(Manipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
-        this.useClass = useClass;
         this.manipulation = manipulation;
         this.factory = factory;
     }
 
-    @Override
-    public int handles() {
-        if (useClass.equals(UUID.class)) return Priority.PRIORITY_HANDLE;
-
-        return Priority.DONT_HANDLE;
-    }
 
     @Override
-    public Object deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
+    public UUID deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
         try {
             return UUID.fromString(node.asScalar().value());
         } catch (IllegalArgumentException exception) {
@@ -48,7 +41,7 @@ public class UUIDManipulator implements Manipulator {
     }
 
     @Override
-    public Node serializeObject(Object object, String[] comment) {
+    public Node serializeObject(UUID object, String[] comment) {
         return factory.scalarOf(
                 object.toString(),
                 comment

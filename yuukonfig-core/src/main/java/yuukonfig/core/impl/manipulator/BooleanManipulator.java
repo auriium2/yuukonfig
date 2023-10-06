@@ -1,6 +1,7 @@
 package yuukonfig.core.impl.manipulator;
 
 import yuukonfig.core.err.BadValueException;
+import yuukonfig.core.impl.safe.ManipulatorSafe;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
 import yuukonfig.core.manipulation.Contextual;
@@ -11,28 +12,20 @@ import yuukonstants.GenericPath;
 
 import java.lang.reflect.Type;
 
-public class BooleanManipulator implements Manipulator {
+public class BooleanManipulator implements ManipulatorSafe<Boolean> {
 
 
     final Manipulation manipulation;
-    final Class<?> useClass;
     final RawNodeFactory factory;
 
     public BooleanManipulator(Manipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
-        this.useClass = useClass;
         this.manipulation = manipulation;
         this.factory = factory;
     }
 
-    @Override
-    public int handles() {
-        if (useClass.equals(Boolean.class) || useClass.equals(boolean.class)) return Priority.PRIORITY_HANDLE;
-
-        return Priority.DONT_HANDLE;
-    }
 
     @Override
-    public Object deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
+    public Boolean deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
         try {
             return Boolean.parseBoolean(node.asScalar().value());
         } catch (NumberFormatException exception) {
@@ -46,7 +39,7 @@ public class BooleanManipulator implements Manipulator {
     }
 
     @Override
-    public Node serializeObject(Object object, String[] comment) {
+    public Node serializeObject(Boolean object, String[] comment) {
         return factory.scalarOf(
                 object,
                 comment

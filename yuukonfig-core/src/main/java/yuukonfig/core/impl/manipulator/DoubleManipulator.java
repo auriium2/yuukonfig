@@ -2,6 +2,7 @@ package yuukonfig.core.impl.manipulator;
 
 import yuukonfig.core.err.BadValueException;
 
+import yuukonfig.core.impl.safe.ManipulatorSafe;
 import yuukonfig.core.manipulation.Contextual;
 import yuukonfig.core.manipulation.Manipulation;
 import yuukonfig.core.manipulation.Priority;
@@ -12,27 +13,18 @@ import yuukonstants.GenericPath;
 
 import java.lang.reflect.Type;
 
-public class DoubleManipulator implements Manipulator {
+public class DoubleManipulator implements ManipulatorSafe<Double> {
 
     final Manipulation manipulation;
-    final Class<?> useClass;
     final RawNodeFactory factory;
 
     public DoubleManipulator(Manipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
-        this.useClass = useClass;
         this.manipulation = manipulation;
         this.factory = factory;
     }
 
     @Override
-    public int handles() {
-        if (useClass.equals(Double.class) || useClass.equals(double.class)) return Priority.PRIORITY_HANDLE;
-
-        return Priority.DONT_HANDLE;
-    }
-
-    @Override
-    public Object deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
+    public Double deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
         try {
             return Double.parseDouble(node.asScalar().value());
         } catch (NumberFormatException exception) {
@@ -46,7 +38,7 @@ public class DoubleManipulator implements Manipulator {
     }
 
     @Override
-    public Node serializeObject(Object object, String[] comment) {
+    public Node serializeObject(Double object, String[] comment) {
         return factory.scalarOf(
                 object,
                 comment
