@@ -19,16 +19,23 @@ public class BaseManipulation implements Manipulation {
     final RawNodeFactory factory;
     final List<ManipulatorConstructor> manips;
     final String configName;
+    final String fullConfigName;
 
-    public BaseManipulation(RawNodeFactory factory, List<ManipulatorConstructor> manips, String configName) {
+    public BaseManipulation(RawNodeFactory factory, List<ManipulatorConstructor> manips, String configName, String fullConfigName) {
         this.factory = factory;
         this.manips = manips;
         this.configName = configName;
+        this.fullConfigName = fullConfigName;
     }
 
     @Override
     public String configName() {
         return configName;
+    }
+
+    @Override
+    public String fullConfigName() {
+        return fullConfigName;
     }
 
     @Override

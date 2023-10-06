@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 public interface Manipulation {
 
     String configName();
+    String fullConfigName();
 
     default Node serialize(Object object, Class<?> under, String[] comment) {
         return serialize(object, under, comment, Contextual.empty());
