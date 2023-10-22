@@ -86,6 +86,11 @@ public class TomlMapping implements Mapping {
     }
 
     @Override
+    public Map<String, Node> getMap() {
+        return map;
+    }
+
+    @Override
     public boolean isEmpty() {
         return map.isEmpty();
     }

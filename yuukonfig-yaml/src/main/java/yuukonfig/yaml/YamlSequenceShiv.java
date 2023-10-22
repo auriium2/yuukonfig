@@ -9,7 +9,9 @@ import yuukonfig.core.node.Node;
 import yuukonfig.core.node.Scalar;
 import yuukonfig.core.node.Sequence;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Function;
 
 public class YamlSequenceShiv implements Sequence {
@@ -92,5 +94,16 @@ public class YamlSequenceShiv implements Sequence {
             count = count + 1;
         }
         return CONVERT.apply(searched);
+    }
+
+    @Override
+    public List<Node> getList() {
+        List<Node> list = new ArrayList<>();
+
+        for (YamlNode node : sequence) {
+            list.add(YamlSequenceShiv.CONVERT.apply(node));
+        }
+
+        return list;
     }
 }

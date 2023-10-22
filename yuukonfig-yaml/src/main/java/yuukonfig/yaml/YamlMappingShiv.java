@@ -10,6 +10,8 @@ import yuukonfig.core.node.Sequence;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class YamlMappingShiv implements Mapping {
 
@@ -75,6 +77,17 @@ public class YamlMappingShiv implements Mapping {
     @Override
     public LocalDateTime dateTime(String key) {
         return yamlMapping.dateTime(key);
+    }
+
+    @Override
+    public Map<String, Node> getMap() {
+        Map<String, Node> map = new HashMap<>();
+
+        for (YamlNode key : yamlMapping.keys()) {
+            map.put(key.asScalar().value(), YamlSequenceShiv.CONVERT.apply( yamlMapping.value(key)));
+        }
+
+        return map;
     }
 
     @Override

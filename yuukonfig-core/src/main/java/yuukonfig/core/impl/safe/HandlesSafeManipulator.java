@@ -36,6 +36,7 @@ public class HandlesSafeManipulator<T> implements Manipulator {
         this.onlySpecificClass = onlySpecificClass;
     }
 
+
     @Override
     public int handles() {
         if (onlySpecificClass) {

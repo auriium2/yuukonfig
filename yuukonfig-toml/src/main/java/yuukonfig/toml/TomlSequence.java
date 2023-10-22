@@ -24,6 +24,11 @@ public class TomlSequence implements Sequence {
     }
 
     @Override
+    public List<Node> getList() {
+        return shit;
+    }
+
+    @Override
     public Iterator<Node> iterator() {
         return shit.iterator();
     }

@@ -3,6 +3,7 @@ package yuukonfig.core.node;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public interface Mapping extends Node {
 
@@ -18,6 +19,8 @@ public interface Mapping extends Node {
     long longNumber(String key);
     LocalDate date(String key);
     LocalDateTime dateTime(String key);
+
+    Map<String, Node> getMap();
 
 
 
