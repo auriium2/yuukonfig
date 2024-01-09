@@ -20,6 +20,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class SectionManipulator implements Manipulator {
 
@@ -52,13 +53,18 @@ public class SectionManipulator implements Manipulator {
             String key = getKey(method);
             Node nullable = mapping.value(key);
 
-            if (nullable == null) {
-                throw new BadValueException(
-                        "a value is expected at this position, but none could be found!",
-                        "add some data under this value!",
-                        manipulation.configName(),
-                        genericPath
-                );
+
+            if (nullable == null || nullable.type() == Node.Type.NOT_PRESENT) {
+                //TODO shitty hack 3
+
+                if (method.getReturnType() != Optional.class) {
+                    throw new BadValueException(
+                            "a value is expected at this position, but none could be found!",
+                            "add some data under this value!",
+                            manipulation.configName(),
+                            genericPath.append(key)
+                    );
+                }
             }
 
             Class<?> returnType = method.getReturnType();
@@ -84,7 +90,7 @@ public class SectionManipulator implements Manipulator {
     }
 
     @Override
-    public Node serializeObject(Object object, String[] comment) {
+    public Node serializeObject(Object object, String[] comment)  {
         RawNodeFactory.MappingBuilder builder = factory.makeMappingBuilder();
 
         for (Method method : useClass.getMethods()) {

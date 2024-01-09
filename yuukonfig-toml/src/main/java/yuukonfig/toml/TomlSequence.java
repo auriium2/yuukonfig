@@ -1,10 +1,7 @@
 package yuukonfig.toml;
 
 import yuukonfig.core.err.BadValueException;
-import yuukonfig.core.node.Mapping;
-import yuukonfig.core.node.Node;
-import yuukonfig.core.node.Scalar;
-import yuukonfig.core.node.Sequence;
+import yuukonfig.core.node.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +17,10 @@ public class TomlSequence implements Sequence {
 
     @Override
     public Node atIndex(int i) {
-        return shit.get(i);
+        Node possible =  shit.get(i);
+
+        if (possible == null) possible = new RawNodeFactory.NotPresentNode();
+        return possible;
     }
 
     @Override

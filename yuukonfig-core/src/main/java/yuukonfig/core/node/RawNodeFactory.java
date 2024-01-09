@@ -1,5 +1,8 @@
 package yuukonfig.core.node;
 
+import yuukonfig.core.err.BadValueException;
+import yuukonfig.core.err.Exceptions;
+
 import java.nio.file.Path;
 
 /**
@@ -32,4 +35,40 @@ public interface RawNodeFactory {
     Mapping mergeMappings(Mapping one, Mapping two);
 
     void writeToFile(Mapping toWrite, Path location);
+
+    default Node notPresentOf() {
+        return new NotPresentNode();
+    }
+    class NotPresentNode implements Node {
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public Type type() {
+            return Type.NOT_PRESENT;
+        }
+
+        @Override
+        public Scalar asScalar() throws BadValueException, ClassCastException {
+            throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
+        }
+
+        @Override
+        public Mapping asMapping() throws BadValueException, ClassCastException {
+            throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
+        }
+
+        @Override
+        public Sequence asSequence() throws BadValueException, ClassCastException {
+            throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
+        }
+
+        @Override
+        public <T> T rawAccess(Class<T> clazz) throws ClassCastException {
+            throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
+        }
+    }
 }

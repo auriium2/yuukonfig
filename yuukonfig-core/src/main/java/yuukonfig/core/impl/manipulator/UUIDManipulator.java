@@ -27,6 +27,16 @@ public class UUIDManipulator implements ManipulatorSafe<UUID> {
 
     @Override
     public UUID deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
+        if (node.type() != Node.Type.SCALAR) {
+            throw new BadValueException(
+                    "the value is not a valid uuid and seems to be a collection",
+                    "set the value to a uuid (look it up)",
+                    manipulation.configName(),
+                    exceptionalKey
+            );
+        }
+
+
         try {
             return UUID.fromString(node.asScalar().value());
         } catch (IllegalArgumentException exception) {

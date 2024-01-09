@@ -213,6 +213,8 @@ public class TomlNodeFactory implements RawNodeFactory {
             Node child = e.getValue();
             String key = e.getKey();
 
+            if (child.type() == Node.Type.NOT_PRESENT) continue;
+
             if (child.type() == Node.Type.MAPPING) {
                 toReturn.put(key, toMap(child.asMapping()));
                 continue;
@@ -234,6 +236,8 @@ public class TomlNodeFactory implements RawNodeFactory {
         List<Object> toReturn = new ArrayList<>();
 
         for (Node child : list) {
+
+            if (child.type() == Node.Type.NOT_PRESENT) continue;
 
             if (child.type() == Node.Type.MAPPING) {
                 toReturn.add(toMap(child.asMapping()));

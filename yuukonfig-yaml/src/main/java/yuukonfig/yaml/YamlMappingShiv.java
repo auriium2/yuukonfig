@@ -3,10 +3,8 @@ package yuukonfig.yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
 import yuukonfig.core.err.BadValueException;
-import yuukonfig.core.node.Mapping;
-import yuukonfig.core.node.Node;
-import yuukonfig.core.node.Scalar;
-import yuukonfig.core.node.Sequence;
+import yuukonfig.core.err.Exceptions;
+import yuukonfig.core.node.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -102,7 +100,7 @@ public class YamlMappingShiv implements Mapping {
 
     @Override
     public Scalar asScalar() throws BadValueException, ClassCastException {
-        throw new ClassCastException("this is a mapping");
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
     }
 
     @Override
@@ -112,7 +110,7 @@ public class YamlMappingShiv implements Mapping {
 
     @Override
     public Sequence asSequence() throws BadValueException, ClassCastException {
-        throw new ClassCastException("this is a mapping");
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
     }
 
     @Override
@@ -121,7 +119,7 @@ public class YamlMappingShiv implements Mapping {
             return clazz.cast(yamlMapping);
         }
 
-        throw new ClassCastException("invalid access of unexpected type");
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
 
     }
 }

@@ -23,6 +23,8 @@ public class YamlNodeFactory implements RawNodeFactory {
 
             @Override
             public void add(Node node) {
+                if (node.type() == Node.Type.NOT_PRESENT) return;
+
                 builder = builder.add(node.rawAccess(YamlNode.class)); //TODO this is horrible
             }
 
@@ -41,6 +43,8 @@ public class YamlNodeFactory implements RawNodeFactory {
 
             @Override
             public void add(String key, Node node) {
+                if (node.type() == Node.Type.NOT_PRESENT) return;
+
                 builder = builder.add(key, node.rawAccess(YamlNode.class));
             }
 
@@ -129,4 +133,6 @@ public class YamlNodeFactory implements RawNodeFactory {
 
 
     }
+
+
 }

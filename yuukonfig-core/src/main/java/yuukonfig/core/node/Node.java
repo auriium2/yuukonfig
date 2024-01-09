@@ -13,7 +13,8 @@ public interface Node {
         SCALAR,
         MAPPING,
         STREAM,
-        SEQUENCE;
+        SEQUENCE,
+        NOT_PRESENT;
     }
 
     boolean isEmpty();

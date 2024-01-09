@@ -4,10 +4,8 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlNode;
 import com.amihaiemil.eoyaml.YamlSequence;
 import yuukonfig.core.err.BadValueException;
-import yuukonfig.core.node.Mapping;
-import yuukonfig.core.node.Node;
-import yuukonfig.core.node.Scalar;
-import yuukonfig.core.node.Sequence;
+import yuukonfig.core.err.Exceptions;
+import yuukonfig.core.node.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,6 +38,8 @@ public class YamlSequenceShiv implements Sequence {
             return new YamlSequenceShiv(i.asSequence());
         }
 
+
+
         return new YamlScalarShiv(Yaml.createYamlScalarBuilder().buildPlainScalar());
     };
 
@@ -60,12 +60,12 @@ public class YamlSequenceShiv implements Sequence {
 
     @Override
     public Scalar asScalar() throws BadValueException, ClassCastException {
-        throw new ClassCastException("this is a sequence");
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
     }
 
     @Override
     public Mapping asMapping() throws BadValueException, ClassCastException {
-        throw new ClassCastException("this is a sequence");
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class YamlSequenceShiv implements Sequence {
             return clazz.cast(sequence);
         }
 
-        throw new ClassCastException("invalid access of unexpected type");
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
 
     }
 

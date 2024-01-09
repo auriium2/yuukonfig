@@ -2,6 +2,7 @@ package yuukonfig.yaml;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import yuukonfig.core.err.BadValueException;
+import yuukonfig.core.err.Exceptions;
 import yuukonfig.core.node.Mapping;
 import yuukonfig.core.node.Scalar;
 import yuukonfig.core.node.Sequence;
@@ -36,12 +37,12 @@ public class YamlScalarShiv implements Scalar {
 
     @Override
     public Mapping asMapping() throws BadValueException, ClassCastException {
-        throw new ClassCastException("this is a scalar");
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
     }
 
     @Override
     public Sequence asSequence() throws BadValueException, ClassCastException {
-        throw new ClassCastException("this is a scalar");
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class YamlScalarShiv implements Scalar {
             return clazz.cast(scalar);
         }
 
-        throw new ClassCastException("invalid access of unexpected type");
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
 
     }
 }

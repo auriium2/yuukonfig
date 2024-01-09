@@ -21,7 +21,9 @@ public class TomlProvider implements YuuKonfigProvider {
                 .register(StringManipulator::new)
                 .register(HandlesPrimitiveManipulator.ofSpecific(Double.class, double.class, DoubleManipulator::new))
                 .register(HandlesSafeManipulator.ofSpecific(UUID.class, UUIDManipulator::new))
-                .register(ListManipulator::new);
+                .register(ListManipulator::new)
+                .register(ArrayManipulator::new)
+                .register(OptionalManipulator::new);
 
     }
 

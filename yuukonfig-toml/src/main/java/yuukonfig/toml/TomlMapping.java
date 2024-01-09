@@ -1,10 +1,7 @@
 package yuukonfig.toml;
 
 import yuukonfig.core.err.BadValueException;
-import yuukonfig.core.node.Mapping;
-import yuukonfig.core.node.Node;
-import yuukonfig.core.node.Scalar;
-import yuukonfig.core.node.Sequence;
+import yuukonfig.core.node.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,6 +28,9 @@ public class TomlMapping implements Mapping {
     @Override
     public Sequence yamlSequence(String key) {
         Node output = map.get(key);
+
+        if (output == null)
+
         if (output.type() != Type.SEQUENCE) {
             throw new IllegalStateException("not a map!");
         }
@@ -52,7 +52,10 @@ public class TomlMapping implements Mapping {
 
     @Override
     public Node value(String key) {
-        return map.get(key);
+        Node possible =  map.get(key);
+
+        if (possible == null) possible = new RawNodeFactory.NotPresentNode();
+        return possible;
     }
 
     @Override

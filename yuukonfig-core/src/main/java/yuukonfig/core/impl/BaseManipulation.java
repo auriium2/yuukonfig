@@ -1,5 +1,6 @@
 package yuukonfig.core.impl;
 
+import yuukonfig.core.YuuKonfig;
 import yuukonfig.core.err.BadValueException;
 import yuukonfig.core.manipulation.Contextual;
 import yuukonfig.core.manipulation.Manipulation;

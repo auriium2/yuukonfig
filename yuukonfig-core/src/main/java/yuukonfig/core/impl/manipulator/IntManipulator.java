@@ -1,14 +1,11 @@
 package yuukonfig.core.impl.manipulator;
 
 import yuukonfig.core.err.BadValueException;
-
 import yuukonfig.core.impl.safe.ManipulatorSafe;
-import yuukonfig.core.node.Node;
-import yuukonfig.core.node.RawNodeFactory;
 import yuukonfig.core.manipulation.Contextual;
 import yuukonfig.core.manipulation.Manipulation;
-import yuukonfig.core.manipulation.Manipulator;
-import yuukonfig.core.manipulation.Priority;
+import yuukonfig.core.node.Node;
+import yuukonfig.core.node.RawNodeFactory;
 import yuukonstants.GenericPath;
 
 import java.lang.reflect.Type;

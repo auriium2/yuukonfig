@@ -7,6 +7,7 @@ import yuukonfig.core.impl.manipulator.*;
 import yuukonfig.core.impl.manipulator.section.SectionManipulator;
 import yuukonfig.core.impl.safe.HandlesPrimitiveManipulator;
 import yuukonfig.core.impl.safe.HandlesSafeManipulator;
+import yuukonfig.core.manipulation.Priority;
 
 import java.util.UUID;
 
@@ -27,5 +28,6 @@ public class YamlProvider implements YuuKonfigProvider {
     @Override
     public byte priority() {
         return 0;
+
     }
 }

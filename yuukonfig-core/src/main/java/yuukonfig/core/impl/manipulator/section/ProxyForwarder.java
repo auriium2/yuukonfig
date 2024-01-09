@@ -18,6 +18,12 @@ public class ProxyForwarder implements Forwarder {
             return method.invoke(toInvokeOn);
         } catch (IllegalAccessException | InvocationTargetException e) {
 
+            if (e.getMessage() == null) {
+                throw new ImpossibleAccessException(
+                        String.format("The config interface %s must be public for YuuKonfig to read it! And: %s", method.getDeclaringClass().getName(), e.getLocalizedMessage())
+                );
+            }
+
             if (e.getMessage().contains("cannot access a member of interface")) {
                 throw new ImpossibleAccessException(
                         String.format("The config interface %s must be public for YuuKonfig to read it!", method.getDeclaringClass().getName())
