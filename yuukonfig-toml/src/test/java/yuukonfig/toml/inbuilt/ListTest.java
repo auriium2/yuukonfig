@@ -68,7 +68,7 @@ public class ListTest {
     public void testSerializingComplexList() {
         Node node = YuuKonfig.instance().test().serializeTest(ComplexListConfig.class);
 
-        System.out.println("oo");
+        //System.out.println("oo");
 
         Assertions.assertEquals(Node.Type.SEQUENCE, node.asMapping().value("subsections").type());
         Assertions.assertEquals("getOutOfMyHouse", node.asMapping().value("subsections").asSequence().atIndex(1).asMapping().string("goodbye"));
