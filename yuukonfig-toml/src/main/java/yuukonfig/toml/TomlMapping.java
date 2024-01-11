@@ -29,8 +29,6 @@ public class TomlMapping implements Mapping {
     public Sequence yamlSequence(String key) {
         Node output = map.get(key);
 
-        if (output == null)
-
         if (output.type() != Type.SEQUENCE) {
             throw new IllegalStateException("not a map!");
         }

@@ -137,7 +137,7 @@ public class TomlNodeFactory implements RawNodeFactory {
             Node newNode = newMap.get(key);
             Node oldNode = original.get(key);
 
-            if (oldNode == null) { //no conflicts!
+            if (oldNode == null || oldNode.type() == Node.Type.NOT_PRESENT) { //no conflicts!
                 original.put(key, newMap.get(key));
 
                 continue;
@@ -198,7 +198,7 @@ public class TomlNodeFactory implements RawNodeFactory {
                 location.toFile().createNewFile();
             }
 
-            new TomlWriter.Builder().build().write(inverse, location.toFile());
+            new TomlWriter.Builder().indentTablesBy(0).indentValuesBy(0).build().write(inverse, location.toFile());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

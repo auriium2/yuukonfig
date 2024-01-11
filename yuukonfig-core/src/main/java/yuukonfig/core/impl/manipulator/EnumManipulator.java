@@ -1,5 +1,7 @@
 package yuukonfig.core.impl.manipulator;
 
+import yuukonfig.core.Exceptions;
+import yuukonfig.core.err.BadConfigException;
 import yuukonfig.core.err.BadValueException;
 
 import yuukonfig.core.node.Node;
@@ -9,6 +11,7 @@ import yuukonfig.core.manipulation.Manipulation;
 import yuukonfig.core.manipulation.Manipulator;
 import yuukonfig.core.manipulation.Priority;
 import yuukonstants.GenericPath;
+import yuukonstants.exception.LocatedException;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -64,6 +67,6 @@ public class EnumManipulator implements Manipulator {
 
     @Override
     public Node serializeDefault(String[] comment) {
-        throw new IllegalStateException("no default value for enum type");
+        throw Exceptions.NO_VALID_DEFAULT(useClass.getSimpleName());
     }
 }

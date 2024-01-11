@@ -30,19 +30,10 @@ public class BaseLoader<T> implements ConfigLoader<T> {
 
         Mapping userContent = factory.loadFromFile(configPath); //loadfrom
         Mapping defaultContent = manipulation.serializeDefault(configClazz, new String[]{}).asMapping();
+
         Mapping combinedContent = factory.mergeMappings(userContent, defaultContent);
 
         Object config = manipulation.deserialize(combinedContent, new GenericPath(new String[] {manipulation.configName()}), configClazz);
-
-        //export defaults since they have passed validation!
-
-        /**
-         * YamlPrinter printer = Yaml.createYamlPrinter(
-         *                     new FileWriter(configPath.toFile())
-         *             );
-         *
-         *             printer.print(combinedContent); //file map.yml will be created and written.
-         */
 
         factory.writeToFile(combinedContent, configPath);
 
