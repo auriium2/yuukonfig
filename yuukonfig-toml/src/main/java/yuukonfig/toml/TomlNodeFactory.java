@@ -2,10 +2,12 @@ package yuukonfig.toml;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
+import yuukonfig.core.Exceptions;
 import yuukonfig.core.node.Mapping;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
 import yuukonfig.core.node.Sequence;
+import yuukonstants.GenericPath;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -51,6 +53,7 @@ public class TomlNodeFactory implements RawNodeFactory {
         };
     }
 
+
     @Override
     public Node scalarOf(Object data, String inlineComment, String... aboveComment) {
         return new TomlScalar(data);
@@ -82,6 +85,55 @@ public class TomlNodeFactory implements RawNodeFactory {
         return iterateMap(rootMap);
     }
 
+
+
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Node> iterateMergeOrdered(Map<String, Node> dominant, Map<String, Node> recessive, GenericPath path) {
+        for (String key : dominant.keySet()) {
+            Node newNode = dominant.get(key);
+            Node oldNode = recessive.get(key);
+
+            if (oldNode == null || oldNode.type() == Node.Type.NOT_PRESENT) { //no conflicts!
+                recessive.put(key, dominant.get(key));
+
+                continue;
+            }
+
+            if (oldNode.type() == Node.Type.SCALAR && newNode.type() == Node.Type.SCALAR) {
+                recessive.put(key, dominant.get(key));
+
+                continue;
+            }
+
+            if (newNode.type() == Node.Type.MAPPING && oldNode.type() == Node.Type.MAPPING) {
+                //conflict. Both are maps tho, so merge!
+
+                Map<String, Node> originalChild = (Map<String, Node>) oldNode.rawAccess(Map.class);
+                Map<String, Node> newChild = (Map<String, Node>) newNode.rawAccess(Map.class);
+                recessive.put(key, new TomlMapping(iterateMergeOrdered(originalChild, newChild, path)));
+
+                continue;
+            }
+            if (newNode.type() == Node.Type.SEQUENCE && oldNode.type() == Node.Type.SEQUENCE) {
+                //conflict. Both are lists, so merge!
+
+                List<Node> originalChild = (List<Node>) oldNode.rawAccess(List.class);
+                List<Node> newChild = (List<Node>) newNode.rawAccess(List.class);
+                for (Node each : newChild) {
+                    if (!originalChild.contains(each)) {
+                        originalChild.add(each);
+                    }
+                }
+                continue;
+            }
+
+            throw Exceptions.STRANGE_CONFIG_CONFLICT(oldNode.type().name(),newNode.type().name(), path);
+
+
+        }
+        return recessive;
+    }
 
 
     Sequence iterateList(List<Object> list) {
@@ -128,11 +180,13 @@ public class TomlNodeFactory implements RawNodeFactory {
             toNode.put(key, new TomlScalar( entry.getValue() )); //TODO this needs to be fixed
         }
 
+
+
         return new TomlMapping(toNode);
     }
 
     @SuppressWarnings("unchecked")
-    private static Map<String, Node> iterateMerge(Map<String, Node> original, Map<String, Node> newMap) {
+    private static Map<String, Node> iterateMerge(Map<String, Node> original, Map<String, Node> newMap, GenericPath path) {
         for (String key : newMap.keySet()) {
             Node newNode = newMap.get(key);
             Node oldNode = original.get(key);
@@ -148,7 +202,7 @@ public class TomlNodeFactory implements RawNodeFactory {
 
                 Map<String, Node> originalChild = (Map<String, Node>) oldNode.rawAccess(Map.class);
                 Map<String, Node> newChild = (Map<String, Node>) newNode.rawAccess(Map.class);
-                original.put(key, new TomlMapping(iterateMerge(originalChild, newChild)));
+                original.put(key, new TomlMapping(iterateMerge(originalChild, newChild, path)));
 
                 continue;
             }
@@ -165,6 +219,8 @@ public class TomlNodeFactory implements RawNodeFactory {
                 continue;
             }
 
+            throw Exceptions.STRANGE_CONFIG_CONFLICT(oldNode.type().name(),newNode.type().name(), path);
+
             //conflict. Both are scalars, use the original from the original map
 
             //original.put(key, newMap.get(key));
@@ -176,11 +232,20 @@ public class TomlNodeFactory implements RawNodeFactory {
     }
 
     @Override
-    public Mapping mergeMappings(Mapping one, Mapping two) {
-        Map<String, Node> original = (Map<String,Node>) one.rawAccess(Map.class);
-        Map<String, Node> secondary = (Map<String, Node>) two.rawAccess(Map.class);
+    public Mapping mergeMappings(Mapping preserved, Mapping optimisticallyADded) {
+        Map<String, Node> original = (Map<String,Node>) preserved.rawAccess(Map.class);
+        Map<String, Node> secondary = (Map<String, Node>) optimisticallyADded.rawAccess(Map.class);
 
-        Map<String, Node> map = iterateMerge(original, secondary);
+        Map<String, Node> map = iterateMerge(original, secondary, new GenericPath());
+        return new TomlMapping(map);
+    }
+
+    @Override
+    public Mapping mergeMappingsOrdered(Mapping dominant, Mapping recessive) {
+        Map<String, Node> dominantM = (Map<String,Node>) dominant.rawAccess(Map.class);
+        Map<String, Node> recessiveM = (Map<String, Node>) recessive.rawAccess(Map.class);
+
+        Map<String, Node> map = iterateMerge(dominantM, recessiveM, new GenericPath());
         return new TomlMapping(map);
     }
 

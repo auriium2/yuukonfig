@@ -124,4 +124,6 @@ public class TomlMapping implements Mapping {
 
         throw new ClassCastException("is: a toml");
     }
+
+
 }

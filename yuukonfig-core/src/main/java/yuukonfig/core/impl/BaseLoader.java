@@ -33,6 +33,8 @@ public class BaseLoader<T> implements ConfigLoader<T> {
 
         Mapping combinedContent = factory.mergeMappings(userContent, defaultContent);
 
+
+
         Object config = manipulation.deserialize(combinedContent, new GenericPath(new String[] {manipulation.configName()}), configClazz);
 
         factory.writeToFile(combinedContent, configPath);

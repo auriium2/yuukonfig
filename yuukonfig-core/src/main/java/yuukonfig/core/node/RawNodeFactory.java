@@ -32,7 +32,8 @@ public interface RawNodeFactory {
     Mapping loadString(String simulatedConfigInStringForm);
     Mapping loadFromFile(Path path);
 
-    Mapping mergeMappings(Mapping one, Mapping two);
+    Mapping mergeMappings(Mapping preserved, Mapping optimisticallyADded);
+    Mapping mergeMappingsOrdered(Mapping dominant, Mapping recessive);
 
     void writeToFile(Mapping toWrite, Path location);
 

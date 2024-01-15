@@ -106,12 +106,17 @@ public class YamlNodeFactory implements RawNodeFactory {
     }
 
     @Override
-    public Mapping mergeMappings(Mapping one, Mapping two) {
-        YamlMapping oneYaml = one.rawAccess(YamlNode.class).asMapping();
-        YamlMapping twoYaml = two.rawAccess(YamlNode.class).asMapping();
+    public Mapping mergeMappings(Mapping preserved, Mapping optimisticallyADded) {
+        YamlMapping oneYaml = preserved.rawAccess(YamlNode.class).asMapping();
+        YamlMapping twoYaml = optimisticallyADded.rawAccess(YamlNode.class).asMapping();
 
         MergedYamlMapping merged = new MergedYamlMapping(oneYaml, twoYaml, false);
         return new YamlMappingShiv(merged);
+    }
+
+    @Override
+    public Mapping mergeMappingsOrdered(Mapping dominant, Mapping recessive) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
