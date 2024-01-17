@@ -3,7 +3,7 @@ package yuukonfig.toml.deserializer.bad;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import yuukonfig.core.YuuKonfig;
-import yuukonfig.core.err.BadConfigException;
+import yuukonfig.core.err.YuuKonfigException;
 import yuukonfig.toml.deserializer.DeserializerTestConfig;
 
 public class MissingValueDeserializerTest {
@@ -20,7 +20,7 @@ public class MissingValueDeserializerTest {
 
     @Test
     public void testBadFormatThrowsYamlException() {
-        Assertions.assertThrows(BadConfigException.class, () -> {
+        Assertions.assertThrows(YuuKonfigException.class, () -> {
             DeserializerTestConfig config = YuuKonfig.instance().test().deserializeTest(MISSING_VALUE_CONFIG, DeserializerTestConfig.class);
 
             config.defaultBool(); //never called

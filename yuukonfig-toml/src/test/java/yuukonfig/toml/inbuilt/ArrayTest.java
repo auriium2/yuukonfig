@@ -2,10 +2,11 @@ package yuukonfig.toml.inbuilt;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import xyz.auriium.yuukonstants.exception.ExceptionUtil;
 import yuukonfig.core.YuuKonfig;
 import yuukonfig.core.annotate.Section;
 import yuukonfig.core.node.Node;
-import yuukonstants.exception.ExceptionUtil;
+
 
 import java.io.IOException;
 import java.lang.reflect.Parameter;

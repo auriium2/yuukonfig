@@ -1,7 +1,9 @@
 package yuukonfig.toml;
 
 import yuukonfig.core.err.BadValueException;
+import yuukonfig.core.err.Exceptions;
 import yuukonfig.core.node.*;
+import xyz.auriium.yuukonstants.GenericPath;
 
 import java.util.Iterator;
 import java.util.List;
@@ -9,17 +11,30 @@ import java.util.List;
 public class TomlSequence implements Sequence {
 
     final List<Node> shit;
+    final GenericPath path;
 
-
-    public TomlSequence(List<Node> shit) {
+    public TomlSequence(List<Node> shit, GenericPath path) {
         this.shit = shit;
+        this.path = path;
+    }
+
+    void checkValue(int i) {
+        if (i > shit.size() - 1) throw Exceptions.SEQUENCE_MISSING(path, i + 1, shit.size());
     }
 
     @Override
-    public Node atIndex(int i) {
-        Node possible =  shit.get(i);
+    public Node atIndexPossiblyEmpty(int i) {
+        Node possible = shit.get(i);
 
-        if (possible == null) possible = new RawNodeFactory.NotPresentNode();
+        if (possible == null) possible = new NotPresentNode(path.append("<" + i + ">"));
+        return possible;
+    }
+
+    @Override
+    public Node atIndexGuaranteed(int i) {
+        Node possible = atIndexPossiblyEmpty(i);
+        if (possible.type() == Type.NOT_PRESENT) throw Exceptions.UNEXPECTED_EMPTY_NODE(path.append("<" + i + ">"));
+
         return possible;
     }
 
@@ -45,12 +60,12 @@ public class TomlSequence implements Sequence {
 
     @Override
     public Scalar asScalar() throws BadValueException, ClassCastException {
-        throw new ClassCastException("bad");
+        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.SCALAR, Type.SEQUENCE);
     }
 
     @Override
     public Mapping asMapping() throws BadValueException, ClassCastException {
-        throw new ClassCastException("bad");
+        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.MAPPING, Type.SEQUENCE);
     }
 
     @Override
@@ -65,5 +80,10 @@ public class TomlSequence implements Sequence {
         }
 
         throw new ClassCastException("is: a toml");
+    }
+
+    @Override
+    public GenericPath path() {
+        return path;
     }
 }

@@ -1,28 +1,26 @@
 package yuukonfig.core.impl.manipulator;
 
 import yuukonfig.core.Exceptions;
-import yuukonfig.core.err.BadConfigException;
 import yuukonfig.core.err.BadValueException;
 
+import yuukonfig.core.impl.BaseManipulation;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
 import yuukonfig.core.manipulation.Contextual;
-import yuukonfig.core.manipulation.Manipulation;
 import yuukonfig.core.manipulation.Manipulator;
 import yuukonfig.core.manipulation.Priority;
-import yuukonstants.GenericPath;
-import yuukonstants.exception.LocatedException;
+import xyz.auriium.yuukonstants.GenericPath;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
 public class EnumManipulator implements Manipulator {
 
-    final Manipulation manipulation;
+    final BaseManipulation manipulation;
     final Class<?> useClass;
     final RawNodeFactory factory;
 
-    public EnumManipulator(Manipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
+    public EnumManipulator(BaseManipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
         this.useClass = useClass;
         this.manipulation = manipulation;
         this.factory = factory;
@@ -37,7 +35,7 @@ public class EnumManipulator implements Manipulator {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
+    public Object deserialize(Node node) throws BadValueException {
         String raw = node.asScalar().value();
         Class<Enum<?>> enumClass = (Class<Enum<?>>) useClass;
 
@@ -52,21 +50,21 @@ public class EnumManipulator implements Manipulator {
                 manipulation.configName(),
                 String.format("The type %s is not a valid enum in the enum set %s", raw, enumClass.getSimpleName()),
                 String.format("Switch to a valid enum, one of: %s", Arrays.toString(enumClass.getEnumConstants())),
-                exceptionalKey
+                node.path()
         );
 
     }
 
     @Override
-    public Node serializeObject(Object object, String[] comment) {
+    public Node serializeObject(Object object, GenericPath path) {
         return factory.scalarOf(
-                object.toString(), //as string
-                comment
+                path,
+                object
         );
     }
 
     @Override
-    public Node serializeDefault(String[] comment) {
-        throw Exceptions.NO_VALID_DEFAULT(useClass.getSimpleName());
+    public Node serializeDefault(GenericPath path) {
+        throw Exceptions.NO_VALID_DEFAULT(path, useClass.getSimpleName());
     }
 }

@@ -1,28 +1,28 @@
 package yuukonfig.core.impl.manipulator;
 
 import yuukonfig.core.err.BadValueException;
+import yuukonfig.core.impl.BaseManipulation;
 import yuukonfig.core.impl.safe.ManipulatorSafe;
 import yuukonfig.core.manipulation.Contextual;
-import yuukonfig.core.manipulation.Manipulation;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
-import yuukonstants.GenericPath;
+import xyz.auriium.yuukonstants.GenericPath;
 
 import java.lang.reflect.Type;
 
 public class IntManipulator implements ManipulatorSafe<Integer> {
 
-    final Manipulation manipulation;
+    final BaseManipulation manipulation;
     final RawNodeFactory factory;
 
-    public IntManipulator(Manipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
+    public IntManipulator(BaseManipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
         this.manipulation = manipulation;
         this.factory = factory;
     }
 
 
     @Override
-    public Integer deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
+    public Integer deserialize(Node node) throws BadValueException {
         try {
             return Integer.parseInt(node.asScalar().value());
         } catch (NumberFormatException exception) {
@@ -30,28 +30,27 @@ public class IntManipulator implements ManipulatorSafe<Integer> {
                     "The value is not a valid integer",
                     "Set the value to an integer, like '2'",
                     manipulation.configName(),
-                    exceptionalKey
+                    node.path()
             );
         }
     }
 
     @Override
-    public Node serializeObject(Integer object, String[] comment) {
+    public Node serializeObject(Integer object, GenericPath path) {
 
         return factory.scalarOf(
-                object,
-                comment
+                path,
+                object
         );
 
 
     }
 
     @Override
-    public Node serializeDefault(String[] comment) {
+    public Node serializeDefault(GenericPath path) {
         return factory.scalarOf(
-                0,
-                "(default int)",
-                comment
+                path,
+                0
         );
     }
 }

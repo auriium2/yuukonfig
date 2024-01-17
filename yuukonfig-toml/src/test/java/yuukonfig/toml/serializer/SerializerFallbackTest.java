@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 import yuukonfig.core.YuuKonfig;
 import yuukonfig.core.annotate.Section;
 import yuukonfig.core.err.BadValueException;
+import yuukonfig.core.impl.BaseManipulation;
 import yuukonfig.core.manipulation.Contextual;
-import yuukonfig.core.manipulation.Manipulation;
 import yuukonfig.core.manipulation.Manipulator;
 import yuukonfig.core.manipulation.Priority;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
-import yuukonstants.GenericPath;
+import xyz.auriium.yuukonstants.GenericPath;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
@@ -42,7 +42,7 @@ public class SerializerFallbackTest {
         final Class<?> useClass;
         final RawNodeFactory factory;
 
-        public DTOManipulator(Manipulation manipulation, Class<?> aClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
+        public DTOManipulator(BaseManipulation manipulation, Class<?> aClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
             this.useClass = aClass;
             this.factory = factory;
         }
@@ -55,21 +55,21 @@ public class SerializerFallbackTest {
         }
 
         @Override
-        public Object deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
+        public Object deserialize(Node node) throws BadValueException {
             throw new IllegalStateException("unsupported");
         }
 
         @Override
-        public Node serializeObject(Object object, String[] comment) {
+        public Node serializeObject(Object object, GenericPath path) {
 
             DTO dto = (DTO) object;
 
-            return factory.scalarOf(String.format("%s,%s", dto.value1, dto.value2));
+            return factory.scalarOf(path, String.format("%s,%s", dto.value1, dto.value2));
         }
 
         @Override
-        public Node serializeDefault(String[] comment) {
-            return factory.scalarOf("hi,bye");
+        public Node serializeDefault(GenericPath path) {
+            return factory.scalarOf(path, "hi,bye");
         }
     }
 

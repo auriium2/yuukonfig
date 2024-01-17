@@ -2,10 +2,10 @@ package yuukonfig.toml.inbuilt;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import xyz.auriium.yuukonstants.exception.ExceptionUtil;
 import yuukonfig.core.YuuKonfig;
 import yuukonfig.core.annotate.Section;
 import yuukonfig.toml.inbuilt.ArrayTest;
-import yuukonstants.exception.ExceptionUtil;
 
 import java.io.IOException;
 import java.util.Optional;

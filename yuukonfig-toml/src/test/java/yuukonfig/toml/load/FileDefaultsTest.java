@@ -19,11 +19,11 @@ public class FileDefaultsTest {
     public void testOfTheLoading(@TempDir Path file) {
         var loader = YuuKonfig.instance().loader(LoadableConfigTest.class, file, "my_config.toml");
 
-        LoadableConfigTest test = loader.load();
+        LoadableConfigTest test = loader.load().loadToMemoryConfig();
 
         Assertions.assertEquals("woowooo", test.subsection().whatever());
 
-        LoadableConfigTest noDefaults = loader.loadWithoutDefaults();
+        LoadableConfigTest noDefaults = loader.loadOnlyDefaults().loadToMemoryConfig();
 
         Assertions.assertEquals("woowooo", noDefaults.subsection().whatever());
     }

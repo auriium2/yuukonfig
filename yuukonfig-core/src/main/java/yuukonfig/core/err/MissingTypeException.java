@@ -1,14 +1,14 @@
 package yuukonfig.core.err;
 
 
-import yuukonstants.GenericPath;
+import xyz.auriium.yuukonstants.GenericPath;
 
-public class MissingTypeException extends BadConfigException {
+public class MissingTypeException extends YuuKonfigException {
 
-    public MissingTypeException(String conf, GenericPath path) {
+    public MissingTypeException(GenericPath path) {
         super(
                 "missingType",
-                String.format("Your YuuKonfig provider does not generate a parameter type correctly for {%s}", path.getAsTablePath()),
+                String.format("Your YuuKonfig provider does not generate a parameter type correctly for {%s}", path.tablePath()),
                 "Please report this to auriium!"
         );
     }

@@ -5,14 +5,13 @@ import org.junit.jupiter.api.Test;
 import yuukonfig.core.YuuKonfig;
 import yuukonfig.core.annotate.Section;
 import yuukonfig.core.err.BadValueException;
+import yuukonfig.core.impl.BaseManipulation;
 import yuukonfig.core.manipulation.Contextual;
-import yuukonfig.core.manipulation.Manipulation;
 import yuukonfig.core.manipulation.Manipulator;
 import yuukonfig.core.manipulation.Priority;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
-import yuukonfig.toml.deserializer.DeserializerTestConfig;
-import yuukonstants.GenericPath;
+import xyz.auriium.yuukonstants.GenericPath;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -59,7 +58,7 @@ public class OrderedTests {
 
         final Class<?> clazz;
 
-        public DeserializeHoldsList(Manipulation manipulation, Class<?> aClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
+        public DeserializeHoldsList(BaseManipulation manipulation, Class<?> aClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
             this.clazz = aClass;
         }
 
@@ -71,17 +70,17 @@ public class OrderedTests {
         }
 
         @Override
-        public Object deserialize(Node node, GenericPath path) throws BadValueException {
+        public Object deserialize(Node node) throws BadValueException {
             return new HoldsList(node.asSequence().getList());
         }
 
         @Override
-        public Node serializeObject(Object object, String[] comment) {
+        public Node serializeObject(Object object, GenericPath path) {
             throw new IllegalStateException("not tested");
         }
 
         @Override
-        public Node serializeDefault(String[] comment) {
+        public Node serializeDefault(GenericPath path) {
             throw new IllegalStateException("not tested");
         }
     }
@@ -90,7 +89,7 @@ public class OrderedTests {
 
         final Class<?> clazz;
 
-        public DeserializeHoldsMap(Manipulation manipulation, Class<?> aClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
+        public DeserializeHoldsMap(BaseManipulation manipulation, Class<?> aClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
             this.clazz = aClass;
         }
 
@@ -102,17 +101,17 @@ public class OrderedTests {
         }
 
         @Override
-        public Object deserialize(Node node, GenericPath path) throws BadValueException {
+        public Object deserialize(Node node) throws BadValueException {
             return new HoldsMap(node.asMapping().getMap());
         }
 
         @Override
-        public Node serializeObject(Object object, String[] comment) {
+        public Node serializeObject(Object object, GenericPath path) {
             throw new IllegalStateException("not tested");
         }
 
         @Override
-        public Node serializeDefault(String[] comment) {
+        public Node serializeDefault(GenericPath path) {
             throw new IllegalStateException("not tested");
         }
     }

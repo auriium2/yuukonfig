@@ -5,7 +5,7 @@ import yuukonfig.core.manipulation.Manipulator;
 import yuukonfig.core.manipulation.ManipulatorConstructor;
 import yuukonfig.core.manipulation.Priority;
 import yuukonfig.core.node.Node;
-import yuukonstants.GenericPath;
+import xyz.auriium.yuukonstants.GenericPath;
 
 public class HandlesPrimitiveManipulator<T> implements Manipulator {
 
@@ -37,17 +37,17 @@ public class HandlesPrimitiveManipulator<T> implements Manipulator {
     }
 
     @Override
-    public Object deserialize(Node node, GenericPath path) throws BadValueException {
-        return manipulator.deserialize(node, path);
+    public Object deserialize(Node node) throws BadValueException {
+        return manipulator.deserialize(node);
     }
 
     @Override
-    public Node serializeObject(Object object, String[] comment) {
-        return manipulator.serializeObject(targetClass.cast(object), comment);
+    public Node serializeObject(Object object, GenericPath path) {
+        return manipulator.serializeObject(targetClass.cast(object), path);
     }
 
     @Override
-    public Node serializeDefault(String[] comment) {
-        return manipulator.serializeDefault(comment);
+    public Node serializeDefault(GenericPath path) {
+        return manipulator.serializeDefault(path);
     }
 }

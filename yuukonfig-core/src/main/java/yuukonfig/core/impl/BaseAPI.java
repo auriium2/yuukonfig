@@ -33,8 +33,8 @@ public class BaseAPI implements YuuKonfigAPI {
 
     @Override
     public <C> ConfigLoader<C> loader(Class<C> clazz, Path configPath) {
-        return new BaseLoader<>(
-                factory, new BaseManipulation(factory, List.copyOf(ctors), configPath.getFileName().toString(), configPath.toString()),
+        return new ConfigLoader<>(
+                factory, new BaseManipulation(factory, ctors.toArray(ManipulatorConstructor[]::new), configPath.getFileName().toString(), configPath.toString()),
                 clazz,
                 configPath
         );
@@ -42,6 +42,6 @@ public class BaseAPI implements YuuKonfigAPI {
 
     @Override
     public TestHelp test() {
-        return new BaseTestHelp(new BaseManipulation(factory, List.copyOf(ctors), "virtual", "virtual"), factory);
+        return new TestHelp(new BaseManipulation(factory, ctors.toArray(ManipulatorConstructor[]::new), "virtual", "virtual"), factory);
     }
 }

@@ -4,13 +4,13 @@ import yuukonfig.core.err.BadValueException;
 
 import yuukonfig.core.err.MissingGenericException;
 import yuukonfig.core.err.MissingTypeException;
+import yuukonfig.core.impl.BaseManipulation;
 import yuukonfig.core.manipulation.Manipulator;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
 import yuukonfig.core.manipulation.Contextual;
-import yuukonfig.core.manipulation.Manipulation;
 import yuukonfig.core.manipulation.Priority;
-import yuukonstants.GenericPath;
+import xyz.auriium.yuukonstants.GenericPath;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -19,12 +19,12 @@ import java.util.List;
 
 public class ListManipulator implements Manipulator {
 
-    final Manipulation manipulation;
+    final BaseManipulation manipulation;
     final Class<?> useClass;
     final RawNodeFactory factory;
     final Contextual<Type> type;
 
-    public ListManipulator(Manipulation manipulation, Class<?> useClass, Contextual<Type> type, RawNodeFactory factory) {
+    public ListManipulator(BaseManipulation manipulation, Class<?> useClass, Contextual<Type> type, RawNodeFactory factory) {
         this.manipulation = manipulation;
         this.useClass = useClass;
         this.type = type;
@@ -41,8 +41,8 @@ public class ListManipulator implements Manipulator {
     }
 
     @Override
-    public Object deserialize(Node node, GenericPath exceptionalKey) throws BadValueException {
-        Class<?> parseAs = getGenericType(exceptionalKey);
+    public Object deserialize(Node node) throws BadValueException {
+        Class<?> parseAs = getGenericType(node.path());
 
         List<Object> uncheckedList = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class ListManipulator implements Manipulator {
         //Type genericParameter0OfThisClass = ((ParameterizedType) parseAs.getGenericSuperclass()).getActualTypeArguments()[0];
 
         for (Node child : node.asSequence()) {
-            Object toAdd = manipulation.deserialize(child, exceptionalKey, parseAs, Contextual.empty()); //TODO deeper contextual searches
+            Object toAdd = manipulation.deserialize(child, parseAs, Contextual.empty()); //TODO deeper contextual searches
 
             uncheckedList.add(toAdd);
         }
@@ -59,29 +59,29 @@ public class ListManipulator implements Manipulator {
     }
 
     @Override
-    public Node serializeObject(Object object, String[] comment) {
+    public Node serializeObject(Object object, GenericPath path) {
         List<?> list = (List<?>) object; //handles should make sure nothing that is not a list is given to this object
 
         //TODO contextual generic key
-        RawNodeFactory.SequenceBuilder builder = factory.makeSequenceBuilder();
+        RawNodeFactory.SequenceBuilder builder = factory.makeSequenceBuilder(path);
 
         Class<?> as = getGenericTypeSer();
 
 
         for (Object subject : list) {
             //TODO sameness check
-            Node toAdd = manipulation.serialize(subject, as, new String[]{}, Contextual.empty()); //List<List<T>> wont work
+            Node toAdd = manipulation.serialize(subject, as, path); //List<List<T>> wont work
 
             builder.add(toAdd);
         }
 
 
-        return builder.build(comment);
+        return builder.build();
     }
 
     @Override
-    public Node serializeDefault(String[] comment) {
-        return factory.makeSequenceBuilder().build(comment);
+    public Node serializeDefault(GenericPath path) {
+        return factory.makeSequenceBuilder(path).build();
     }
 
     Class<?> getGenericTypeSer() {
@@ -98,7 +98,7 @@ public class ListManipulator implements Manipulator {
     }
 
     Class<?> getGenericType(GenericPath key) {
-        if (!type.present()) throw new MissingTypeException(manipulation.configName(), key);
+        if (!type.present()) throw new MissingTypeException(key);
 
         Class<?> actualTypeArgument;
         try {

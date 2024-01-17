@@ -1,19 +1,14 @@
-package yuukonfig.toml;
+package yuukonfig.core.node;
 
 import yuukonfig.core.err.BadValueException;
 import yuukonfig.core.err.Exceptions;
-import yuukonfig.core.node.Mapping;
-import yuukonfig.core.node.Scalar;
-import yuukonfig.core.node.Sequence;
 import xyz.auriium.yuukonstants.GenericPath;
 
-public class TomlScalar implements Scalar {
+public class NotPresentNode implements Node {
 
-    final Object wrapped;
     final GenericPath path;
 
-    public TomlScalar(Object wrapped, GenericPath path) {
-        this.wrapped = wrapped;
+    public NotPresentNode(GenericPath path) {
         this.path = path;
     }
 
@@ -23,41 +18,32 @@ public class TomlScalar implements Scalar {
     }
 
     @Override
-    public Type type() {
-        return Type.SCALAR;
+    public Node.Type type() {
+        return Node.Type.NOT_PRESENT;
     }
 
     @Override
     public Scalar asScalar() throws BadValueException, ClassCastException {
-        return this;
+        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.SCALAR, Type.MAPPING);
     }
 
     @Override
     public Mapping asMapping() throws BadValueException, ClassCastException {
-        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.MAPPING, Type.SCALAR);
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
     }
 
     @Override
     public Sequence asSequence() throws BadValueException, ClassCastException {
-        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.SEQUENCE, Type.SCALAR);
+        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.SEQUENCE, Type.MAPPING);
     }
 
     @Override
     public <T> T rawAccess(Class<T> clazz) throws ClassCastException {
-        if (clazz == Object.class) {
-            return clazz.cast(wrapped);
-        }
-
-        throw new ClassCastException("is: a toml");
+        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
     }
 
     @Override
     public GenericPath path() {
         return path;
-    }
-
-    @Override
-    public String value() {
-        return wrapped.toString();
     }
 }

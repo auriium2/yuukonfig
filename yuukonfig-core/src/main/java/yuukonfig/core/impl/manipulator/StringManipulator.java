@@ -1,24 +1,24 @@
 package yuukonfig.core.impl.manipulator;
 
 
+import yuukonfig.core.impl.BaseManipulation;
 import yuukonfig.core.manipulation.Contextual;
-import yuukonfig.core.manipulation.Manipulation;
 import yuukonfig.core.manipulation.Priority;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
 import yuukonfig.core.manipulation.Manipulator;
-import yuukonstants.GenericPath;
+import xyz.auriium.yuukonstants.GenericPath;
 
 import java.lang.reflect.Type;
 
 public class StringManipulator implements Manipulator {
 
 
-    final Manipulation manipulation;
+    final BaseManipulation manipulation;
     final Class<?> useClass;
     final RawNodeFactory factory;
 
-    public StringManipulator(Manipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
+    public StringManipulator(BaseManipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
         this.manipulation = manipulation;
         this.useClass = useClass;
         this.factory = factory;
@@ -33,24 +33,23 @@ public class StringManipulator implements Manipulator {
     }
 
     @Override
-    public Object deserialize(Node node, GenericPath exceptionalKey) {
+    public Object deserialize(Node node) {
         return node.asScalar().value();
     }
 
     @Override
-    public Node serializeObject(Object object, String[] comment) {
+    public Node serializeObject(Object object, GenericPath path) {
         return factory.scalarOf(
-                object.toString(),
-                comment
+                path,
+                object.toString()
         );
     }
 
     @Override
-    public Node serializeDefault(String[] comment) {
+    public Node serializeDefault(GenericPath path) {
         return factory.scalarOf(
-                "",
-                "(default string)",
-                comment
+                path,
+                ""
         );
     }
 }

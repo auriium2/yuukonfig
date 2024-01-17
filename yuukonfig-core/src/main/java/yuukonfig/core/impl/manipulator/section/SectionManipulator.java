@@ -1,18 +1,16 @@
 package yuukonfig.core.impl.manipulator.section;
 
-import yuukonfig.core.annotate.Comment;
+import xyz.auriium.yuukonstants.GenericPath;
 import yuukonfig.core.annotate.Key;
 import yuukonfig.core.annotate.Section;
-import yuukonfig.core.err.BadConfigException;
 import yuukonfig.core.err.BadValueException;
+import yuukonfig.core.impl.BaseManipulation;
 import yuukonfig.core.manipulation.Contextual;
-import yuukonfig.core.manipulation.Manipulation;
 import yuukonfig.core.manipulation.Manipulator;
 import yuukonfig.core.manipulation.Priority;
 import yuukonfig.core.node.Mapping;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
-import yuukonstants.GenericPath;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -24,11 +22,11 @@ import java.util.Optional;
 
 public class SectionManipulator implements Manipulator {
 
-    final Manipulation manipulation;
+    final BaseManipulation manipulation;
     final Class<?> useClass;
     final RawNodeFactory factory;
 
-    public SectionManipulator(Manipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
+    public SectionManipulator(BaseManipulation manipulation, Class<?> useClass, Contextual<Type> typeContextual, RawNodeFactory factory) {
         this.manipulation = manipulation;
         this.useClass = useClass;
         this.factory = factory;
@@ -42,7 +40,7 @@ public class SectionManipulator implements Manipulator {
     }
 
     @Override
-    public Object deserialize(Node node, GenericPath genericPath) {
+    public Object deserialize(Node node) {
         Mapping mapping = node.asMapping();
 
         Map<String, Object> backingMap = new HashMap<>();
@@ -51,10 +49,10 @@ public class SectionManipulator implements Manipulator {
             checkArgs(method);
 
             String key = getKey(method);
-            Node nullable = mapping.value(key);
+            Node possiblyNotPresent = mapping.valuePossiblyMissing(key);
 
 
-            if (nullable == null || nullable.type() == Node.Type.NOT_PRESENT) {
+            if (possiblyNotPresent.type() == Node.Type.NOT_PRESENT) {
                 //TODO shitty hack 3
 
                 if (method.getReturnType() != Optional.class) {
@@ -62,7 +60,7 @@ public class SectionManipulator implements Manipulator {
                             "a value is expected at this position, but none could be found!",
                             "add some data under this value!",
                             manipulation.configName(),
-                            genericPath.append(key)
+                            node.path().append(key)
                     );
                 }
             }
@@ -70,8 +68,7 @@ public class SectionManipulator implements Manipulator {
             Class<?> returnType = method.getReturnType();
 
             var object = manipulation.deserialize(
-                    nullable,
-                    genericPath.append(key),
+                    possiblyNotPresent,
                     returnType,
                     Contextual.present(
                             method.getGenericReturnType()
@@ -90,25 +87,24 @@ public class SectionManipulator implements Manipulator {
     }
 
     @Override
-    public Node serializeObject(Object object, String[] comment)  {
-        RawNodeFactory.MappingBuilder builder = factory.makeMappingBuilder();
+    public Node serializeObject(Object object, GenericPath path)  {
+        RawNodeFactory.MappingBuilder builder = factory.makeMappingBuilder(path);
 
         for (Method method : useClass.getMethods()) {
             checkArgs(method);
 
             String key = getKey(method);
             Class<?> as = method.getReturnType();
-            String[] comments = getComment(method);
             Object toSerialize = new ProxyForwarder(method, object).invoke(); //get the return of the method
 
 
 
 
 
-            Node serialized = manipulation.serialize(
+            Node serialized = manipulation.serializeCtx(
                     toSerialize,
                     as,
-                    comments,
+                    path.append(key),
                     Contextual.present(
                             method.getGenericReturnType()
                     )
@@ -118,11 +114,11 @@ public class SectionManipulator implements Manipulator {
 
         }
 
-        return builder.build(comment);
+        return builder.build();
     }
 
     @Override
-    public Node serializeDefault(String[] comment) {
+    public Node serializeDefault(GenericPath path) {
         Object proxy = Proxy.newProxyInstance(
                 ClassLoader.getSystemClassLoader(),
                 new Class[]{ useClass },
@@ -135,14 +131,13 @@ public class SectionManipulator implements Manipulator {
                 }
         );
 
-        RawNodeFactory.MappingBuilder builder = factory.makeMappingBuilder();
+        RawNodeFactory.MappingBuilder builder = factory.makeMappingBuilder(path);
 
         for (Method method : useClass.getMethods()) {
             checkArgs(method);
 
             Class<?> returnType = method.getReturnType();
             String key = getKey(method);
-            String[] comments = getComment(method);
             Node serialized;
 
             //System.out.println("working on: " + key);
@@ -150,16 +145,16 @@ public class SectionManipulator implements Manipulator {
             if (method.isDefault()) {
 
                 //System.out.println("defaulting: " + key);
-                serialized = manipulation.serialize(
+                serialized = manipulation.serializeCtx(
                         new ProxyForwarder(method, proxy).invoke(),
                         returnType,
-                        comments,
+                        path.append(key),
                         Contextual.present(method.getGenericReturnType())
                 );
             } else {
-                serialized = manipulation.serializeDefault(
+                serialized = manipulation.serializeDefaultCtx(
                         returnType,
-                        comments,
+                        path.append(key),
                         Contextual.present(method.getGenericReturnType())
                 );
             }
@@ -169,7 +164,7 @@ public class SectionManipulator implements Manipulator {
             builder.add(key, serialized);
         }
 
-        return builder.build(comment);
+        return builder.build();
     }
 
 
@@ -182,13 +177,6 @@ public class SectionManipulator implements Manipulator {
         }
     }
 
-    String[] getComment(Method method) {
-        if (method.isAnnotationPresent(Comment.class)) {
-            return method.getAnnotation(Comment.class).value();
-        }
-
-        return new String[]{};
-    }
 
     String getKey(Method method) {
         if (method.isAnnotationPresent(Key.class)) {

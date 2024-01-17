@@ -1,7 +1,9 @@
 package yuukonfig.toml;
 
 import yuukonfig.core.err.BadValueException;
+import yuukonfig.core.err.Exceptions;
 import yuukonfig.core.node.*;
+import xyz.auriium.yuukonstants.GenericPath;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,79 +12,105 @@ import java.util.Map;
 public class TomlMapping implements Mapping {
 
     final Map<String,Node> map;
+    final GenericPath path;
 
-    public TomlMapping(Map<String,Node> map) {
+    public TomlMapping(Map<String,Node> map, GenericPath path) {
         this.map = map;
+        this.path = path;
+    }
+
+    void checkIfPresent(String key) {
+        if (map.get(key) == null) {
+            throw Exceptions.UNEXPECTED_EMPTY_NODE(path.append(key));
+        }
+
     }
 
     @Override
     public Mapping yamlMapping(String key) {
-        Node output = map.get(key);
-        if (output.type() != Type.MAPPING) {
-            throw new IllegalStateException("not a map!");
-        }
+        checkIfPresent(key);
 
-        return output.asMapping();
+        return map.get(key).asMapping();
     }
 
     @Override
     public Sequence yamlSequence(String key) {
-        Node output = map.get(key);
+        checkIfPresent(key);
 
-        if (output.type() != Type.SEQUENCE) {
-            throw new IllegalStateException("not a map!");
-        }
-
-
-        return output.asSequence();
+        return map.get(key).asSequence();
     }
 
     @Override
     public String string(String key) {
+        checkIfPresent(key);
+
         return map.get(key).asScalar().value();
     }
 
     @Override
     public String foldedBlockScalar(String key) {
+        checkIfPresent(key);
+
         return map.get(key).asScalar().value();
     }
 
 
     @Override
-    public Node value(String key) {
-        Node possible =  map.get(key);
+    public Node valuePossiblyMissing(String key) {
+        var possiblyNull = map.get(key);
+        if (possiblyNull == null) return new NotPresentNode(path.append(key));
 
-        if (possible == null) possible = new RawNodeFactory.NotPresentNode();
-        return possible;
+        return map.get(key);
+    }
+
+    @Override
+    public Node valueGuaranteed(String key) throws BadValueException {
+        checkIfPresent(key);
+        var nodeMaybe = map.get(key);
+        if (nodeMaybe.type() == Type.NOT_PRESENT) throw Exceptions.UNEXPECTED_EMPTY_NODE(path.append(key));
+
+        return map.get(key);
     }
 
     @Override
     public int integer(String key) {
+        checkIfPresent(key);
+
         return Integer.parseInt(map.get(key).asScalar().value());
     }
 
     @Override
     public float floatNumber(String key) {
+        checkIfPresent(key);
+
         return Float.parseFloat(map.get(key).asScalar().value());
     }
 
     @Override
     public double doubleNumber(String key) {
+        checkIfPresent(key);
+
         return Double.parseDouble(map.get(key).asScalar().value());
     }
 
     @Override
     public long longNumber(String key) {
+        checkIfPresent(key);
+
         return Long.parseLong(map.get(key).asScalar().value());
     }
 
     @Override
     public LocalDate date(String key) {
+        checkIfPresent(key);
+
         return LocalDate.parse(map.get(key).asScalar().value());
     }
 
     @Override
     public LocalDateTime dateTime(String key) {
+        checkIfPresent(key);
+
         return LocalDateTime.parse(map.get(key).asScalar().value());
     }
 
@@ -123,6 +151,11 @@ public class TomlMapping implements Mapping {
         }
 
         throw new ClassCastException("is: a toml");
+    }
+
+    @Override
+    public GenericPath path() {
+        return path;
     }
 
 

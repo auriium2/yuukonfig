@@ -40,7 +40,7 @@ public class NestedSerializerTest {
     public void testSerialization() {
         Node node = YuuKonfig.instance().test().serializeTest(InternalConfig.class);
 
-        Assertions.assertEquals(10, node.asMapping().value("nestedConfig").asMapping().integer("someint"));
+        Assertions.assertEquals(10, node.asMapping().valuePossiblyMissing("nestedConfig").asMapping().integer("someint"));
         Assertions.assertEquals(5, node.asMapping().integer("number"));
         Assertions.assertEquals("true", node.asMapping().string("bool"));
 

@@ -3,16 +3,16 @@ package yuukonfig.core.node;
 
 
 import yuukonfig.core.err.BadValueException;
+import xyz.auriium.yuukonstants.GenericPath;
 
 /**
- * Exists to wrap YamlNode because.. fucking yamlnode bruh
+ * Represents a node
  */
 public interface Node {
 
     enum Type {
         SCALAR,
         MAPPING,
-        STREAM,
         SEQUENCE,
         NOT_PRESENT;
     }
@@ -25,6 +25,8 @@ public interface Node {
     Sequence asSequence() throws BadValueException, ClassCastException;
 
     <T> T rawAccess(Class<T> clazz) throws ClassCastException; //hackery
+
+    GenericPath path();
 
 
 

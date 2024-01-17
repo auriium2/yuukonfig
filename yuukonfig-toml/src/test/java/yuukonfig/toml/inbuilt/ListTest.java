@@ -36,8 +36,8 @@ public class ListTest {
 
         Node node = YuuKonfig.instance().test().serializeTest(DefaultListConfig.class);
 
-        Assertions.assertEquals(Node.Type.SEQUENCE, node.asMapping().value("stringsList").type());
-        Assertions.assertEquals("3", node.asMapping().value("integerList").asSequence().atIndex(1).asScalar().value());
+        Assertions.assertEquals(Node.Type.SEQUENCE, node.asMapping().valuePossiblyMissing("stringsList").type());
+        Assertions.assertEquals("3", node.asMapping().valuePossiblyMissing("integerList").asSequence().atIndexPossiblyEmpty(1).asScalar().value());
 
     }
 
@@ -70,8 +70,8 @@ public class ListTest {
 
         //System.out.println("oo");
 
-        Assertions.assertEquals(Node.Type.SEQUENCE, node.asMapping().value("subsections").type());
-        Assertions.assertEquals("getOutOfMyHouse", node.asMapping().value("subsections").asSequence().atIndex(1).asMapping().string("goodbye"));
+        Assertions.assertEquals(Node.Type.SEQUENCE, node.asMapping().valuePossiblyMissing("subsections").type());
+        Assertions.assertEquals("getOutOfMyHouse", node.asMapping().valuePossiblyMissing("subsections").asSequence().atIndexPossiblyEmpty(1).asMapping().string("goodbye"));
     }
 
     public interface ComplexListConfig extends Section {

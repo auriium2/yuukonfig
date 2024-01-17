@@ -9,7 +9,6 @@ import java.util.List;
 public interface YuuKonfigAPI {
 
     YuuKonfigAPI register(ManipulatorConstructor manipulator);
-
     List<ManipulatorConstructor> testCTORS();
 
     default <C> ConfigLoader<C> loader(Class<C> clazz, Path path, String fileName) {

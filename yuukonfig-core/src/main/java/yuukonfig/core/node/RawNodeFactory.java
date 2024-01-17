@@ -1,8 +1,12 @@
 package yuukonfig.core.node;
 
+import yuukonfig.core.SerializeFunction;
 import yuukonfig.core.err.BadValueException;
 import yuukonfig.core.err.Exceptions;
+import xyz.auriium.yuukonstants.GenericPath;
+import yuukonfig.core.manipulation.Contextual;
 
+import java.lang.reflect.Type;
 import java.nio.file.Path;
 
 /**
@@ -14,20 +18,21 @@ public interface RawNodeFactory {
     interface SequenceBuilder {
         void add(Node node);
 
+        void addSerialize(SerializeFunction sz, Object data, Class<?> toSerializeAs);
+        void addSerialize(SerializeFunction sz, Object data, Class<?> toSerializeAs, Contextual<Type> ctx);
+
         Sequence build(String... aboveComment);
     }
 
     interface MappingBuilder {
         void add(String key, Node node);
-
         Mapping build(String... aboveComment);
     }
 
-    SequenceBuilder makeSequenceBuilder();
-    MappingBuilder makeMappingBuilder();
+    SequenceBuilder makeSequenceBuilder(GenericPath path);
+    MappingBuilder makeMappingBuilder(GenericPath path);
 
-    Node scalarOf(Object data, String inlineComment, String... aboveComment);
-    Node scalarOf(Object data, String... aboveComment);
+    Node scalarOf(GenericPath path, Object data);
 
     Mapping loadString(String simulatedConfigInStringForm);
     Mapping loadFromFile(Path path);
@@ -37,39 +42,8 @@ public interface RawNodeFactory {
 
     void writeToFile(Mapping toWrite, Path location);
 
-    default Node notPresentOf() {
-        return new NotPresentNode();
+    default Node notPresentOf(GenericPath path) {
+        return new NotPresentNode(path);
     }
-    class NotPresentNode implements Node {
 
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public Type type() {
-            return Type.NOT_PRESENT;
-        }
-
-        @Override
-        public Scalar asScalar() throws BadValueException, ClassCastException {
-            throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
-        }
-
-        @Override
-        public Mapping asMapping() throws BadValueException, ClassCastException {
-            throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
-        }
-
-        @Override
-        public Sequence asSequence() throws BadValueException, ClassCastException {
-            throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
-        }
-
-        @Override
-        public <T> T rawAccess(Class<T> clazz) throws ClassCastException {
-            throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
-        }
-    }
 }

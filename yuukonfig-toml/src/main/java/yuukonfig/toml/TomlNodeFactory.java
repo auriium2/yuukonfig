@@ -3,13 +3,16 @@ package yuukonfig.toml;
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
 import yuukonfig.core.Exceptions;
+import yuukonfig.core.SerializeFunction;
+import yuukonfig.core.manipulation.Contextual;
 import yuukonfig.core.node.Mapping;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
 import yuukonfig.core.node.Sequence;
-import yuukonstants.GenericPath;
+import xyz.auriium.yuukonstants.GenericPath;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +21,7 @@ import java.util.Map;
 
 public class TomlNodeFactory implements RawNodeFactory {
     @Override
-    public SequenceBuilder makeSequenceBuilder() {
+    public SequenceBuilder makeSequenceBuilder(GenericPath path) {
         return new SequenceBuilder() {
 
             final List<Node> internal = new ArrayList<>();
@@ -29,14 +32,28 @@ public class TomlNodeFactory implements RawNodeFactory {
             }
 
             @Override
+            public void addSerialize(SerializeFunction sz, Object data, Class<?> toSerializeAs) {
+                var nd = sz.serialize(data, toSerializeAs, path.append("<" + internal.size() + ">"), Contextual.empty());
+
+                internal.add(nd);
+            }
+
+            @Override
+            public void addSerialize(SerializeFunction sz, Object data, Class<?> toSerializeAs, Contextual<Type> ctx) {
+                var nd = sz.serialize(data, toSerializeAs, path.append("<" + internal.size() + ">"), ctx);
+
+                internal.add(nd);
+            }
+
+            @Override
             public Sequence build(String... aboveComment) {
-                return new TomlSequence(internal);
+                return new TomlSequence(internal, path);
             }
         };
     }
 
     @Override
-    public MappingBuilder makeMappingBuilder() {
+    public MappingBuilder makeMappingBuilder(GenericPath path) {
         return new MappingBuilder() {
 
             final Map<String, Node> internal = new HashMap<>();
@@ -48,21 +65,17 @@ public class TomlNodeFactory implements RawNodeFactory {
 
             @Override
             public Mapping build(String... aboveComment) {
-                return new TomlMapping(internal);
+                return new TomlMapping(internal, path);
             }
         };
     }
 
 
     @Override
-    public Node scalarOf(Object data, String inlineComment, String... aboveComment) {
-        return new TomlScalar(data);
+    public Node scalarOf(GenericPath path, Object data) {
+        return new TomlScalar(data, path);
     }
 
-    @Override
-    public Node scalarOf(Object data, String... aboveComment) { //comments disappear :(
-        return new TomlScalar(data);
-    }
 
     @Override
     public Mapping loadString(String simulatedConfigInStringForm) {
@@ -72,7 +85,7 @@ public class TomlNodeFactory implements RawNodeFactory {
     @Override
     public Mapping loadFromFile(Path path) {
         if (!path.toFile().exists() || !path.toFile().isFile()) {
-            return new TomlMapping(new HashMap<>()); //empty
+            return new TomlMapping(new HashMap<>(), new GenericPath()); //empty
         } else {
             return loadFromToml(new Toml().read(path.toFile()));
         }
@@ -82,7 +95,7 @@ public class TomlNodeFactory implements RawNodeFactory {
 
     Mapping loadFromToml(Toml populatedToml) {
         var rootMap = populatedToml.toMap();
-        return iterateMap(rootMap);
+        return iterateMap(rootMap, new GenericPath()); //root
     }
 
 
@@ -111,7 +124,7 @@ public class TomlNodeFactory implements RawNodeFactory {
 
                 Map<String, Node> originalChild = (Map<String, Node>) oldNode.rawAccess(Map.class);
                 Map<String, Node> newChild = (Map<String, Node>) newNode.rawAccess(Map.class);
-                recessive.put(key, new TomlMapping(iterateMergeOrdered(originalChild, newChild, path)));
+                recessive.put(key, new TomlMapping(iterateMergeOrdered(originalChild, newChild, path), path));
 
                 continue;
             }
@@ -136,29 +149,30 @@ public class TomlNodeFactory implements RawNodeFactory {
     }
 
 
-    Sequence iterateList(List<Object> list) {
+    Sequence iterateList(List<Object> list, GenericPath root) {
 
         List<Node> toNode = new ArrayList<>();
 
-        for (Object ob : list) {
+        for (int i = 0; i < list.size(); i++) {
+            Object ob = list.get(i);
+
             if (ob instanceof List<?>) {
-                toNode.add(iterateList((List<Object>) ob));
+                toNode.add(iterateList((List<Object>) ob, root.append("<" + i + ">")));
                 continue;
             }
 
             if (ob instanceof Map<?,?>) {
-                toNode.add(iterateMap((Map<String, Object>) ob));
+                toNode.add(iterateMap((Map<String, Object>) ob, root.append("<" + i + ">")));
                 continue;
             }
 
-            toNode.add(new TomlScalar(ob));
+            toNode.add(new TomlScalar(ob, root.append("<" + i + ">")));
             continue;
         }
-
-        return new TomlSequence(toNode);
+        return new TomlSequence(toNode, root);
     }
 
-    Mapping iterateMap(Map<String, Object> map) {
+    Mapping iterateMap(Map<String, Object> map, GenericPath root) {
         Map<String, Node> toNode = new HashMap<>();
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -166,23 +180,23 @@ public class TomlNodeFactory implements RawNodeFactory {
 
             if (entry.getValue() instanceof List<?>) { //seqeuence
                 List<Object> sublist = (List<Object>) entry.getValue();
-                Sequence subnode = iterateList(sublist);
+                Sequence subnode = iterateList(sublist, root.append(key));
                 toNode.put(key, subnode);
                 continue;
             }
             if (entry.getValue() instanceof Map<?,?>) { //table
                 Map<String, Object> subtable = (Map<String, Object>) entry.getValue();
-                Mapping subnode = iterateMap(subtable);
+                Mapping subnode = iterateMap(subtable, root.append(key));
                 toNode.put(key, subnode);
                 continue;
             }
             //primitive
-            toNode.put(key, new TomlScalar( entry.getValue() )); //TODO this needs to be fixed
+            toNode.put(key, new TomlScalar( entry.getValue(), root.append(key))); //TODO this needs to be fixed
         }
 
 
 
-        return new TomlMapping(toNode);
+        return new TomlMapping(toNode, root);
     }
 
     @SuppressWarnings("unchecked")
@@ -202,7 +216,7 @@ public class TomlNodeFactory implements RawNodeFactory {
 
                 Map<String, Node> originalChild = (Map<String, Node>) oldNode.rawAccess(Map.class);
                 Map<String, Node> newChild = (Map<String, Node>) newNode.rawAccess(Map.class);
-                original.put(key, new TomlMapping(iterateMerge(originalChild, newChild, path)));
+                original.put(key, new TomlMapping(iterateMerge(originalChild, newChild, path), path));
 
                 continue;
             }
@@ -237,7 +251,7 @@ public class TomlNodeFactory implements RawNodeFactory {
         Map<String, Node> secondary = (Map<String, Node>) optimisticallyADded.rawAccess(Map.class);
 
         Map<String, Node> map = iterateMerge(original, secondary, new GenericPath());
-        return new TomlMapping(map);
+        return new TomlMapping(map, new GenericPath()); //root
     }
 
     @Override
@@ -246,7 +260,7 @@ public class TomlNodeFactory implements RawNodeFactory {
         Map<String, Node> recessiveM = (Map<String, Node>) recessive.rawAccess(Map.class);
 
         Map<String, Node> map = iterateMerge(dominantM, recessiveM, new GenericPath());
-        return new TomlMapping(map);
+        return new TomlMapping(map, new GenericPath()); //root
     }
 
     @Override
@@ -255,8 +269,6 @@ public class TomlNodeFactory implements RawNodeFactory {
 
 
         Map<String, Object> inverse = toMap(toWrite);
-
-
 
         try {
             if (!location.toFile().exists()) {
