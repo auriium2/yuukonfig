@@ -106,6 +106,8 @@ public class TomlNodeFactory implements RawNodeFactory {
         for (String key : dominant.keySet()) {
             Node dominantChild = dominant.get(key);
             Node recessiveChild = recessive.get(key);
+            GenericPath childPath = path.append(key);
+
 
             if (recessiveChild == null || recessiveChild.type() == Node.Type.NOT_PRESENT) { //no conflicts!
                 recessive.put(key, dominant.get(key));
@@ -122,9 +124,15 @@ public class TomlNodeFactory implements RawNodeFactory {
             if (dominantChild.type() == Node.Type.MAPPING && recessiveChild.type() == Node.Type.MAPPING) {
                 //conflict. Both are maps tho, so merge!
 
+
                 Map<String, Node> recessiveChild2 = (Map<String, Node>) recessiveChild.rawAccess(Map.class);
                 Map<String, Node> dominantChild2 = (Map<String, Node>) dominantChild.rawAccess(Map.class);
-                recessive.put(key, new TomlMapping(iterateMergeOrdered(dominantChild2, recessiveChild2, path), path));
+
+
+                recessive.put(
+                        key,
+                        new TomlMapping(iterateMergeOrdered(dominantChild2, recessiveChild2, childPath), childPath)
+                );
 
                 continue;
             }
@@ -141,7 +149,7 @@ public class TomlNodeFactory implements RawNodeFactory {
                 continue;
             }
 
-            throw Exceptions.STRANGE_CONFIG_CONFLICT(recessiveChild.type().name(),dominantChild.type().name(), path);
+            throw Exceptions.STRANGE_CONFIG_CONFLICT(recessiveChild.type().name(),dominantChild.type().name(), childPath);
 
 
         }
@@ -175,23 +183,26 @@ public class TomlNodeFactory implements RawNodeFactory {
     Mapping iterateMap(Map<String, Object> map, GenericPath root) {
         Map<String, Node> toNode = new HashMap<>();
 
+
+
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
+            GenericPath childPath = root.append(key);
 
             if (entry.getValue() instanceof List<?>) { //seqeuence
                 List<Object> sublist = (List<Object>) entry.getValue();
-                Sequence subnode = iterateList(sublist, root.append(key));
+                Sequence subnode = iterateList(sublist, childPath);
                 toNode.put(key, subnode);
                 continue;
             }
             if (entry.getValue() instanceof Map<?,?>) { //table
                 Map<String, Object> subtable = (Map<String, Object>) entry.getValue();
-                Mapping subnode = iterateMap(subtable, root.append(key));
+                Mapping subnode = iterateMap(subtable, childPath);
                 toNode.put(key, subnode);
                 continue;
             }
             //primitive
-            toNode.put(key, new TomlScalar( entry.getValue(), root.append(key))); //TODO this needs to be fixed
+            toNode.put(key, new TomlScalar( entry.getValue(), childPath)); //TODO this needs to be fixed
         }
 
 
@@ -204,6 +215,7 @@ public class TomlNodeFactory implements RawNodeFactory {
         for (String key : newMap.keySet()) {
             Node newNode = newMap.get(key);
             Node oldNode = original.get(key);
+            GenericPath childPath = path.append(key);
 
 
 
@@ -226,7 +238,7 @@ public class TomlNodeFactory implements RawNodeFactory {
 
                 Map<String, Node> originalChild = (Map<String, Node>) oldNode.rawAccess(Map.class);
                 Map<String, Node> newChild = (Map<String, Node>) newNode.rawAccess(Map.class);
-                original.put(key, new TomlMapping(iterateMerge(originalChild, newChild, path.append(key)), path));
+                original.put(key, new TomlMapping(iterateMerge(originalChild, newChild, childPath), childPath));
 
                 continue;
             }
@@ -243,7 +255,7 @@ public class TomlNodeFactory implements RawNodeFactory {
                 continue;
             }
 
-            throw Exceptions.STRANGE_CONFIG_CONFLICT(oldNode.type().name(),newNode.type().name(), path.append(key));
+            throw Exceptions.STRANGE_CONFIG_CONFLICT(oldNode.type().name(),newNode.type().name(), childPath);
 
 
         }
