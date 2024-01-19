@@ -24,17 +24,17 @@ public class NotPresentNode implements Node {
 
     @Override
     public Scalar asScalar() throws BadValueException, ClassCastException {
-        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.SCALAR, Type.MAPPING);
+        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.SCALAR, Type.NOT_PRESENT);
     }
 
     @Override
     public Mapping asMapping() throws BadValueException, ClassCastException {
-        throw Exceptions.INCORRECT_NODE_TYPE_SERIALIZATION;
+        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.MAPPING, Type.NOT_PRESENT);
     }
 
     @Override
     public Sequence asSequence() throws BadValueException, ClassCastException {
-        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.SEQUENCE, Type.MAPPING);
+        throw Exceptions.UNEXPECTED_NODE_TYPE(path, Type.SEQUENCE, Type.NOT_PRESENT);
     }
 
     @Override
