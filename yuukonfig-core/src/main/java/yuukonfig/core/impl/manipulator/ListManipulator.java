@@ -5,6 +5,7 @@ import yuukonfig.core.err.BadValueException;
 import yuukonfig.core.err.MissingGenericException;
 import yuukonfig.core.err.MissingTypeException;
 import yuukonfig.core.impl.BaseManipulation;
+import yuukonfig.core.impl.TypeUtil;
 import yuukonfig.core.manipulation.Manipulator;
 import yuukonfig.core.node.Node;
 import yuukonfig.core.node.RawNodeFactory;
@@ -45,6 +46,7 @@ public class ListManipulator implements Manipulator {
         Class<?> parseAs = getGenericType(node.path());
 
         List<Object> uncheckedList = new ArrayList<>();
+
 
         //contextual
         //Type genericParameter0OfThisClass = ((ParameterizedType) parseAs.getGenericSuperclass()).getActualTypeArguments()[0];

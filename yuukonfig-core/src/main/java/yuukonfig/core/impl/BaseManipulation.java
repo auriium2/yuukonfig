@@ -44,7 +44,47 @@ public class BaseManipulation {
     }
 
     public <T> T safeDeserialize(Node node, Class<T> as, Contextual<Type> typeCtx) {
-        return as.cast(deserialize(node, as, typeCtx));
+        var obj = deserialize(node, as, typeCtx);
+        //TODO shitty hack
+
+        if (obj instanceof Long && as == long.class) {
+            long totallyLittleDouble = (Long) obj;
+            return as.cast(totallyLittleDouble);
+        }
+
+        if (obj instanceof Short && as == short.class) {
+            short totallyLittleDouble = (Short) obj;
+            return as.cast(totallyLittleDouble);
+        }
+
+        if (obj instanceof Boolean && as == boolean.class) {
+            boolean totallyLittleDouble = (Boolean) obj;
+            return as.cast(totallyLittleDouble);
+        }
+
+        if (obj instanceof Character && as == char.class) {
+            double totallyLittleDouble = (Character) obj;
+            return as.cast(totallyLittleDouble);
+        }
+
+
+        if (obj instanceof Double && as == double.class) {
+            double totallyLittleDouble = (Double) obj;
+            return as.cast(totallyLittleDouble);
+        }
+
+        if (obj instanceof Integer && as == int.class) {
+            int totallyLittleDouble = (Integer) obj;
+            return as.cast(totallyLittleDouble);
+        }
+
+        if (obj instanceof Byte && as == byte.class) {
+            byte totallyLittleDouble = (Byte) obj;
+            return as.cast(totallyLittleDouble);
+        }
+
+
+        return as.cast(obj);
     }
 
     public <T> T safeDeserialize(Node node, Class<T> as) {
