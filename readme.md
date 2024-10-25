@@ -95,21 +95,3 @@ bool: true
 Configs are immutable (cannot change values) and threadsafe.
 
 Configs support any object or interface you can think of, even user defined ones.
-
-# Vs. DazzleConf
-
-YuuKonfig is clearly inspired by DazzleConf. If you need a config library for a production environment, you are better off using DazzleConf.
-
-| Feature | YuuKonfig | DazzleConf |
-| --- | --- | --- |
-| Production Philosophy | Intent on allowing for extensive configuration modification, allowing externally defined configs | Intent on fast, easy to write and heavily checked configs |
-| Feature Set | Barebones built in features since extensibility is a priority | Contains many built in features such as nested sections, static serializers, range annotations, etc |
-| Backing Libraries | YuuKonfig is tied to YML and uses EO-Yaml | DazzleConf is platform agnostic and uses a variety of libraries |
-| Extensibility | Priority | Neutral |
-| Maintainability | Neutral | Priority |
-| Security and Safety | Neutral | Priority |
-| Runtime-Defined configs | Priority | X |
-| Serializers as a first class citizen | Priority | X |
-| Simplicity | Incredible | Overcomplicated |
-| Battle Tested | X | Very much so |
-
