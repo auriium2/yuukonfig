@@ -1,6 +1,6 @@
 # YuuKonfig
 
-Configuration for idiots
+Infinitely extensible configuration library
 
 # Introduction
 
