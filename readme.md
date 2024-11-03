@@ -1,58 +1,19 @@
 # YuuKonfig
+> Infinitely extensible configuration library
 
-Infinitely extensible configuration library
+# TLDR
+- typesafe, threadsafe, timesafe config
+- toml and yaml support
+- extensible to any language, any object
+- lightweight (Compiled Jar is 50 KB, great for shading)
+- never write a config parser again
 
-# Introduction
+## What is this?
+YuuKonfig is a library that allows you to annotate an interface that describes your application's configuration As a result, reading from your configuration is **type safe**
 
-**Objectives**
-- Typesafe, threadsafe, timesafe config
-- Reloadable
-- Auto update
-- Really expandable
-- Never write a config parser again
-- Lightweight (Compiled Jar is 50 KB, great for shading)
+YuuKonfig uses bytecode generation to implement your configuration interface as a simple java object, so configuration reads are fast as well as friendly to your developers.
 
-# Repos
-
-```xml
-
-<dependencies>
-    <dependency>
-      <groupId>com.superyuuki</groupId>
-      <artifactId>yuukonfig-core</artifactId>
-      <version>3.1.9-SNAPSHOT</version>
-    </dependency>
-</dependencies>
-
-<repositories>
-    <repository>
-        <id>yuuki-releases</id>
-        <name>releases</name>
-        <url>https://repo.superyuuki.com/releases</url>
-    </repository>
-</repositories>
-
-```
-
-**Then pick either**
-```
-<dependency>
-  <groupId>com.superyuuki</groupId>
-  <artifactId>yuukonfig-toml</artifactId>
-  <version>3.1.9-SNAPSHOT</version>
-</dependency>
-```
-or
-```
-<dependency>
-  <groupId>com.superyuuki</groupId>
-  <artifactId>yuukonfig-yaml</artifactId>
-  <version>3.1.9-SNAPSHOT</version>
-</dependency>
-```
-
-# Use
-
+## How do I use this?
 ```java
 
 public interface InternalConfig extends Section {
@@ -83,15 +44,58 @@ public interface InternalConfig extends Section {
 
 ```
 
-Gives you
-
+Serializes/Deserializes from
 ```yaml
 nestedConfig:
   someint: 10
 number: 5
 bool: true
 ```
+And also supports
+```toml
+[nestedConfig]
+someint = 10
+number = 5
+bool = true
+```
 
-Configs are immutable (cannot change values) and threadsafe.
+## Can i use json?
+YuuKonfig doesn't have json support, but the flexibility of the library structure should make it relatively easy to implement (adding TOML support was a 2 hour task). Please send me an email if you need json support!
 
-Configs support any object or interface you can think of, even user defined ones.
+## I want to use this
+Repositories:
+```xml
+
+<dependencies>
+    <dependency>
+      <groupId>com.superyuuki</groupId>
+      <artifactId>yuukonfig-core</artifactId>
+      <version>3.1.9-SNAPSHOT</version>
+    </dependency>
+</dependencies>
+
+<repositories>
+    <repository>
+        <id>yuuki-releases</id>
+        <name>releases</name>
+        <url>https://repo.superyuuki.com/releases</url>
+    </repository>
+</repositories>
+
+```
+Flavors:
+```
+<dependency>
+  <groupId>com.superyuuki</groupId>
+  <artifactId>yuukonfig-toml</artifactId>
+  <version>3.1.9-SNAPSHOT</version>
+</dependency>
+```
+or
+```
+<dependency>
+  <groupId>com.superyuuki</groupId>
+  <artifactId>yuukonfig-yaml</artifactId>
+  <version>3.1.9-SNAPSHOT</version>
+</dependency>
+```
