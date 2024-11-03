@@ -53,10 +53,10 @@ bool: true
 ```
 And also supports
 ```toml
-[nestedConfig]
-someint = 10
 number = 5
 bool = true
+[nestedConfig]
+someint = 10
 ```
 
 ## Can i use json?
